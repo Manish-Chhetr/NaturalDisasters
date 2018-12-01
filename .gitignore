@@ -1,0 +1,4 @@
+*.class
+map_token.txt
+*.csv
+.ipynb_checkpoints/
