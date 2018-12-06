@@ -16,9 +16,9 @@ app = dash.Dash(__name__)
 app.config['suppress_callback_exceptions'] = True
 
 colorscale_magnitude = [
-	[0, '#ffffb2'],
-	[0.25, '#fecc5c'],
-	[0.5, '#fd8d3c'],
+	[0, '#a303b9'],
+	[0.25, '#ea6402'], 
+	[0.5, '#fa73a0'],
 	[0.75, '#f03b20'],
 	[1, '#bd0026'],
 ]
@@ -28,57 +28,72 @@ colorscale_depth = [
 	[0.1, '#636363'],
 ]
 
+about_mags = pd.read_csv('magnitude_scale.csv')
+
 app.layout = html.Div([
 	html.H1('Natural Disasters', 
 		style={'textAlign' : 'center', 'margin-top' : 45, 'margin-bottom' : 35}),
 	dcc.Tabs(id='natural-disasters', children=[
 		dcc.Tab(label='Earthquakes', children=[
 			html.Hr(),
-			html.H3('Earthquake Data Plotting', 
-				style={'textAlign' : 'center', 'margin-top' : 30, 'margin-bottom' : 30}),
 			html.Div([
-				html.Div([html.H5('Type of the data')], 
-					className='three columns', style={'textAlign' : 'right'}),
+				html.H3('Earthquake Data Plotting', 
+					style={'textAlign' : 'center', 'margin-top' : 30, 'margin-bottom' : 30}),
 				html.Div([
-					dcc.Dropdown(
-						id='datatype',
-						options=[
-							{'label' : 'This Hour', 'value' : 'all_hour'},
-							{'label' : 'Yesterday', 'value' : 'all_day'},
-							{'label' : 'Last Week', 'value' : 'all_week'},
-						],
-						value='all_day',
-					)
-				], className='three columns', style={'textAlign' : 'left'}),
-				html.Div([html.H5('Magnitude ( > )')], className='two columns',
-					style={'textAlign' : 'right'}),
-				html.Div([
-					dcc.Dropdown(
-						id='magnitude',
-						options=[{'label' : s, 'value' : s} for s in measuring_mags],
-						value=2
-					)
-				], className='two columns', style={'textAlign' : 'center'})
-			], className='row', style={'textAlign' : 'center'}),
+					html.Div([html.H5('Type of the data')], 
+						className='three columns', style={'textAlign' : 'right'}),
+					html.Div([
+						dcc.Dropdown(
+							id='datatype',
+							options=[
+								{'label' : 'This Hour', 'value' : 'all_hour'},
+								{'label' : 'Yesterday', 'value' : 'all_day'},
+								{'label' : 'Last Week', 'value' : 'all_week'},
+							],
+							value='all_hour',
+						)
+					], className='three columns', style={'textAlign' : 'left'}),
+					html.Div([html.H5('Magnitude ( > )')], className='two columns',
+						style={'textAlign' : 'right'}),
+					html.Div([
+						dcc.Dropdown(
+							id='magnitude-drop',
+							options=[{'label' : s, 'value' : s} for s in measuring_mags],
+							value=2
+						)
+					], className='two columns', style={'textAlign' : 'center'})
+				], className='row', style={'textAlign' : 'center'}),
 
-			html.Div([
-				html.Div([html.H5('Select the State Region')], className='six columns',
-					style={'textAlign' : 'right'}),
 				html.Div([
-					dcc.Dropdown(id='region-options')
-				], className='three columns', style={'textAlign' : 'left'})
-			], className='row', style={'margin-top' : 30}),
+					html.Div([html.H5('Select the State Region')], className='six columns',
+						style={'textAlign' : 'right'}),
+					html.Div([
+						dcc.Dropdown(id='region-options')
+					], className='three columns', style={'textAlign' : 'left'})
+				], className='row', style={'margin-top' : 30}),
+			], style={'borderBottom' : 'thin lightgrey solid', 
+					'backgroundColor' : 'rgb(213, 245, 227)', 
+					'padding': '10px 10px',
+					'margin-left' : 30, 
+					'margin-right' : 30,
+			}),
 
 			html.Div([dcc.Graph(id='map-layout')]),
 
 			html.Div([
 				html.Div([
-					html.H5('Significance of Magnitude', style={'textAlign' : 'center'}),
+					html.Div([html.Div(id='highest-mag')]),
 					html.Div([
-						html.P("Magnitude is the best available estimate of earthquake's size at its source. The amplitude of the seismic waves from which the magnitude is determined are approximately 10 times as large during a magnitude 5 earthquake as during a magnitude 4 earthquake."),
-						html.P("Earthquakes are commonly complex events that release energy over a wide range of frequencies and at varying amounts as faulting or rupture process occurs.")
-					], style={'margin-left' : 20, 'margin-top' : 40})
-				], className='four columns', style={'margin-top' : 110}),
+						html.Table([
+							html.Thead(
+								html.Tr([html.Th(col.title()) for col in about_mags.columns.values])
+							),
+							html.Tbody([
+								html.Tr([html.Td(data) for data in rd]) for rd in about_mags.values.tolist()
+							])
+						])
+					], style={'margin-left' : 50, 'margin-top' : 40})
+				], className='four columns'),
 				html.Div([
 					html.H6('Magnitude and Places', style={'textAlign' : 'center'}),
 					dcc.Tabs(id='mag-grpahs', value='mbar', children=[
@@ -137,7 +152,7 @@ def grab_appropriate_data(datatype, filter_mag):
 
 @app.callback(
 	Output('region-options', 'options'),
-	[Input('datatype', 'value'), Input('magnitude', 'value')]
+	[Input('datatype', 'value'), Input('magnitude-drop', 'value')]
 )
 def grab_region_option(datatype, filter_mag):
 	grab_appropriate_data(datatype, filter_mag)
@@ -173,7 +188,7 @@ def set_region_value(region_options):
 
 @app.callback(
 	Output('map-layout', 'figure'),
-	[ Input('datatype', 'value'), Input('magnitude', 'value'), 
+	[ Input('datatype', 'value'), Input('magnitude-drop', 'value'), 
 		Input('region-options', 'value')]
 )
 def show_earthquakes(datatype, filter_mag, region_options):
@@ -223,14 +238,10 @@ def show_earthquakes(datatype, filter_mag, region_options):
 		state_regions[p] = regions
 	state_regions['World Wide'] = []
 
-	mi = []
-	ms = []
-	di = []
-	ds = []
-	lats = []
-	lons = []
+	mi = []; ms = []; di = []
+	ds = []; lats = []; lons = []
 	region_names = []
-	zoom_value = 0
+	# zoom_value = 0
 	for k, v in state_regions.items():
 		if k == region_options:
 			zoom_value = 3
@@ -266,19 +277,11 @@ def show_earthquakes(datatype, filter_mag, region_options):
 				colorscale=colorscale_magnitude,
 			),
 			text=info, hoverinfo='text', showlegend=False
-		),
-		go.Scattermapbox(
-			lat=lats, lon=lons, mode='markers',
-			marker=dict(
-				size=ds, color=ds, opacity=0,
-				colorscale=colorscale_depth,
-			),
-			hoverinfo='skip',	showlegend=False
 		)
 	]
 
 	layout = go.Layout(
-		height=680, autosize=True, showlegend=False,
+		height=700, autosize=True, showlegend=False,
 	  hovermode='closest',
 	  geo=dict(
 	  	projection=dict(type="equirectangular"),
@@ -286,14 +289,35 @@ def show_earthquakes(datatype, filter_mag, region_options):
 	  mapbox=dict(
 	    accesstoken=map_token, bearing=1,
 			center=dict(lat=lats[0], lon=lons[0]),
-			pitch=0, zoom=zoom_value, style='dark'
+			pitch=0, zoom=zoom_value, 
+			style='mapbox://styles/chaotic-enigma/cjpbbmuzmadb12spjq5n07nd1'
 		)
 	)
 	return {'data' : quakes, 'layout' : layout}
 
 @app.callback(
+	Output('highest-mag', 'children'),
+	[Input('datatype', 'value'), Input('magnitude-drop', 'value')]
+)
+def display_highest(datatype, filter_mag):
+	grab_appropriate_data(datatype, filter_mag)
+	eq = pd.read_csv('filtered_mags.csv')
+	hm_mags = eq['mag'].tolist()
+	high_mag = max(hm_mags)
+	places = eq['place'].tolist()
+
+	for p in range(len(places)):
+		if hm_mags[p] == high_mag:
+			hm_place = places[p]
+
+	return html.Div([
+			html.Div([html.H1(str(high_mag))], style={'margin-bottom' : -20}),
+			html.Div([html.P(hm_place)]),
+		], style={'margin-top' : 40, 'textAlign' : 'center'})
+
+@app.callback(
 	Output('mag-line', 'figure'),
-	[ Input('datatype', 'value'), Input('magnitude', 'value'), 
+	[ Input('datatype', 'value'), Input('magnitude-drop', 'value'), 
 		Input('region-options', 'value')]
 )
 def mag_line_diagram(datatype, filter_mag, region_options):
@@ -364,7 +388,7 @@ def mag_line_diagram(datatype, filter_mag, region_options):
 
 @app.callback(
 	Output('mag-bar', 'figure'),
-	[ Input('datatype', 'value'), Input('magnitude', 'value'), 
+	[ Input('datatype', 'value'), Input('magnitude-drop', 'value'), 
 		Input('region-options', 'value')]
 )
 def mag_bar_diagram(datatype, filter_mag, region_options):
@@ -472,7 +496,7 @@ def mag_bar_diagram(datatype, filter_mag, region_options):
 
 @app.callback(
 	Output('pie-chart', 'figure'),
-	[Input('datatype', 'value'), Input('magnitude', 'value')]
+	[Input('datatype', 'value'), Input('magnitude-drop', 'value')]
 )
 def pie_diagram(datatype, filter_mag):
 	grab_appropriate_data(datatype, filter_mag)
@@ -515,4 +539,3 @@ for js in external_js:
 
 if __name__ == '__main__':
 	app.run_server(debug=True)
-
