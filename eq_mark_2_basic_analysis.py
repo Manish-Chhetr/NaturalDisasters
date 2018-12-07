@@ -174,7 +174,7 @@ def grab_region_option(datatype, filter_mag):
 	for entry in splaces:
 		counter_places[entry] = end_names.count(entry)
 
-	regions = counter_places.keys()
+	regions = list(counter_places.keys())
 	regions.insert(0, 'World Wide')
 	all_regions = {str(datatype) : regions}
 	return [{'label' : s, 'value' : s} for s in regions]
@@ -429,7 +429,7 @@ def mag_bar_diagram(datatype, filter_mag, region_options):
 		state_regions[p] = regions
 	state_regions['World Wide'] = []
 
-	region_places = state_regions.keys()
+	region_places = list(state_regions.keys())
 	region_places.remove('World Wide')
 
 	traces = []
@@ -519,8 +519,8 @@ def pie_diagram(datatype, filter_mag):
 	traces = []
 	traces.append(
 		go.Pie(
-			labels=counter_places.keys(),
-			values=counter_places.values(),
+			labels=list(counter_places.keys()),
+			values=list(counter_places.values()),
 			pull=.1
 		)
 	)
