@@ -1,6 +1,7 @@
 import csv
 import dash
 import time
+import base64
 import pandas as pd
 import datetime as dt
 import plotly.graph_objs as go
@@ -56,6 +57,9 @@ def extract_places_regions(eq_places):
 
 ###################################################################################################
 ############## history of earthquakes ############
+logo_image = 'cartoon-globe.png'
+en_logo = base64.b64encode(open(logo_image, 'rb').read())
+
 def extract_month_values():
 	all_month = pd.read_csv('https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_month.csv')
 	time = pd.to_datetime(all_month['time'])
@@ -192,9 +196,17 @@ app.layout = html.Div([
 
 		dcc.Tab(label='Earthquake history', children=[
 			html.Div([
-				html.Div([html.H3('Start and End dates')],
-					className='six columns', style={'textAlign' : 'right'}),
 				html.Div([
+					html.Img(src='data:image/png;base64,{}'.format(en_logo.decode()), id='logo',
+						style={'width' : 90, 'height' : 90})
+				], className='two columns', style={'textAlign' : 'right'}),
+				html.Div([
+					dcc.Input(id='search-here', type='text', value='', 
+						placeholder='Search Places : ', size=60
+					)
+				], className='four columns', style={'margin-top' : 25}),
+				html.Div([
+					html.P('Monthly data', style={'textAlign' : 'center'}),
 					dcc.DatePickerRange(
 						id='all-thirty',
 						start_date=date_start,
@@ -202,8 +214,8 @@ app.layout = html.Div([
 						min_date_allowed=date_start,
 						max_date_allowed=date_end
 					)
-				], className='six columns', style={'textAlign' : 'left'})
-			], className='row', style={'margin-top' : 30}),
+				], className='five columns', style={'textAlign' : 'right'})
+			], className='row', style={'margin-top' : 40}),
 
 			html.Div([html.Div(id='map-daily-output')]),
 
