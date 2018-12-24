@@ -1,1 +1,1 @@
-# NaturalDisasters
+# NaturalDisasters - Earthquakes
