@@ -53,15 +53,17 @@ def extract_places_regions(eq_places):
 	regions = list(counter_places.keys())
 	region_counts = list(counter_places.values())
 
-	return regions, region_counts
+	return splaces, regions, region_counts
 
 ###################################################################################################
 ############## history of earthquakes ############
 logo_image = 'cartoon-globe.png'
 en_logo = base64.b64encode(open(logo_image, 'rb').read())
 
+entire_month = pd.read_csv('https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_month.csv')
+
 def extract_month_values():
-	all_month = pd.read_csv('https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_month.csv')
+	all_month = entire_month.copy()
 	time = pd.to_datetime(all_month['time'])
 	all_month['time'] = time
 	fields = [field for field in all_month]
@@ -98,6 +100,47 @@ def get_dates_sorted():
 timestamps = get_dates_sorted()
 date_start = dt.datetime.strptime(timestamps[0], '%Y-%m-%d')
 date_end = dt.datetime.strptime(timestamps[len(timestamps)-1], '%Y-%m-%d')
+
+def place_wise_extraction(place_name):
+	all_month = entire_month.copy()
+	all_places = all_month['place'].tolist()
+	u_regions, _, _ = extract_places_regions(all_places) # specific last name
+	# print(u_regions)
+	fields, month_values = extract_month_values()
+	place_data = [fields]
+	if place_name in u_regions:
+		for each_item in month_values:
+			each_row = list(each_item)
+			p = each_row[13].split(', ')
+			if len(p) == 2:
+				if p[1] == place_name:
+					if each_row[4] >= 1:
+						place_data.append(each_row)
+			elif len(p) == 1:
+				if p[0] == place_name:
+					if each_row[4] >= 1:
+						place_data.append(each_row)
+	if place_name == 'earth' or place_name == 'world':
+		for each_item in month_values:
+			each_row = list(each_item)
+			if each_row[4] >= 1:
+				place_data.append(each_row)
+	
+	with open('place_data.csv', 'w') as pdata:
+		writer = csv.writer(pdata)
+		writer.writerows(place_data)
+
+def history_eq(eq_some, zoom_value):
+	lats = eq_some['latitude'].tolist()
+	lons = eq_some['longitude'].tolist()
+	places = eq_some['place'].tolist()
+	mags = ['Magnitude : ' + str(i) for i in eq_some['mag']]
+	mag_size = [float(i) * radius_multiplier['outer'] for i in eq_some['mag']]
+	depth_size = [float(i) * radius_multiplier['inner'] for i in eq_some['mag']]
+	depths = ['Depth : ' + str(i) for i in eq_some['depth']]
+	info = [places[i] + '<br>' + mags[i] + '<br>' + depths[i] for i in range(len(places))]
+	zooming = zoom_value
+	return lats, lons, places, mags, mag_size, depth_size, depths, info, zooming
 ###################################################################################################
 
 app = dash.Dash(__name__)
@@ -235,7 +278,7 @@ def grab_region_options(datatype, filter_mag):
 	grab_appropriate_data(datatype, filter_mag)
 	eq = pd.read_csv('filtered_mags.csv')
 	places = eq['place'].tolist()
-	regions, _ = extract_places_regions(places)
+	_, regions, _ = extract_places_regions(places)
 	regions.insert(0, 'World Wide')
 	return [{'label' : s, 'value' : s} for s in regions]
 
@@ -274,7 +317,7 @@ def plot_earthquakes(datatype, filter_mag, region_options):
 		depth_size = [float(i) * radius_multiplier['inner'] for i in depths]
 		depth_info = ['Depth: ' + str(i) for i in depths]
 
-		eplaces, _ = extract_places_regions(places)
+		_, eplaces, _ = extract_places_regions(places)
 		seperate = []
 		for p in range(len(places)):
 			seperate.append([places[p].split(', '), latitudes[p], longitudes[p], 
@@ -410,7 +453,7 @@ def mag_bar_diagram(datatype, filter_mag, region_options):
 			places = eq['place'].tolist()
 			mags = eq['mag'].tolist()
 
-			eplaces, _ = extract_places_regions(places)
+			_, eplaces, _ = extract_places_regions(places)
 
 			seperate = []
 			for p in range(len(places)):
@@ -502,7 +545,7 @@ def pie_region_diagram(datatype, filter_mag):
 			grab_appropriate_data(datatype, filter_mag)
 			eq = pd.read_csv('filtered_mags.csv')
 			places = eq['place'].tolist()
-			regions, region_counts = extract_places_regions(places)
+			_, regions, region_counts = extract_places_regions(places)
 			traces = []
 			traces.append(
 				go.Pie(labels=regions, values=region_counts, pull=.1)
@@ -528,26 +571,32 @@ def pie_region_diagram(datatype, filter_mag):
 ################ earthquake history ##############
 @app.callback(
 	Output('map-daily-output', 'children'),
-	[Input('all-thirty', 'start_date'), Input('all-thirty', 'end_date')]
+	[Input('all-thirty', 'start_date'), Input('all-thirty', 'end_date'), 
+		Input('search-here', 'value')]
 )
-def display_quakes_day(start, end):
+def display_quakes_day(start, end, query):
 	try:
 		start = dt.datetime.strptime(start, '%Y-%m-%d')
 		end = dt.datetime.strptime(end, '%Y-%m-%d')
 		year, month, day = [start.year, start.month, start.day]
+		query_value = query
 
-		day_wise_extraction(year, month, day)
-		eq = pd.read_csv('month_day.csv')
+		lats = []; lons = []; places = []; info = []
+		mags = []; mag_size = []; depth_size = []; depths = []
 
-		lats = eq['latitude'].tolist()
-		lons = eq['longitude'].tolist()
-		places = eq['place'].tolist()
-		mags = ['Magnitude : ' + str(i) for i in eq['mag']]
-		mag_size = [float(i) * radius_multiplier['outer'] for i in eq['mag']]
-		depth_size = [float(i) * radius_multiplier['inner'] for i in eq['mag']]
-		depths = ['Depth : ' + str(i) for i in eq['depth']]
-
-		info = [places[i] + '<br>' + mags[i] + '<br>' + depths[i] for i in range(len(places))]
+		if query_value == '':
+			day_wise_extraction(year, month, day)
+			eq = pd.read_csv('month_day.csv')
+			lats, lons, places, mags, mag_size, depth_size, depths, info, zoom_value = history_eq(eq, 1)
+		else:
+			if query_value == 'earth' or query_value == 'world':
+				place_wise_extraction(query_value)
+				eq = pd.read_csv('place_data.csv')
+				lats, lons, places, mags, mag_size, depth_size, depths, info, zoom_value = history_eq(eq, 1)
+			else:
+				place_wise_extraction(query_value)
+				eq = pd.read_csv('place_data.csv')
+				lats, lons, places, mags, mag_size, depth_size, depths, info, zoom_value = history_eq(eq, 3)
 
 		quakes = [
 			go.Scattermapbox(
@@ -570,7 +619,7 @@ def display_quakes_day(start, end):
 				center=dict(
 					lat=lats[0], lon=lons[0]
 				),
-				pitch=0, zoom=1, 
+				pitch=0, zoom=zoom_value, 
 				style='mapbox://styles/chaotic-enigma/cjpbbmuzmadb12spjq5n07nd1'
 			)
 		)
@@ -583,7 +632,8 @@ def display_quakes_day(start, end):
 	except Exception as e:
 		return html.Div([
 			html.H4('Network issues, could not load the map'),
-			html.H2('Try refreshing the page...')
+			html.H2('Try refreshing the page...'),
+			html.P(str(e))
 		], style={'margin-top' : 200, 'margin-bottom' : 200, 'textAlign' : 'center'})
 ##################################################
 
