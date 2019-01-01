@@ -1,1 +1,1 @@
-# NaturalDisasters - Earthquakes
+# Seismic Analysis
