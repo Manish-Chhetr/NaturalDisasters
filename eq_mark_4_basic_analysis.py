@@ -147,7 +147,7 @@ app = dash.Dash(__name__)
 app.config['suppress_callback_exceptions'] = True
 
 app.layout = html.Div([
-	html.H1('Natural Disasters - Earthquakes',
+	html.H1('Earthquakes - Seismic Analysis',
 		style={'textAlign' : 'center', 'margin-top' : 40, 'margin-bottom' : 30}),
 
 	html.Hr(),
@@ -169,7 +169,7 @@ app.layout = html.Div([
 								{'label' : 'Today', 'value' : 'all_day'},
 								{'label' : 'Last Week', 'value' : 'all_week'},
 							],
-							value='all_hour',
+							value='all_day',
 						)
 					], className='three columns', style={'textAlign' : 'left'}),
 					html.Div([html.H5('Mag above')], className='two columns', style={'textAlign' : 'right'}),
@@ -177,7 +177,7 @@ app.layout = html.Div([
 						dcc.Dropdown(
 							id='magnitude-drop',
 							options=[{'label' : s, 'value' : s} for s in measuring_mags],
-							value=1
+							value=3
 						)
 					], className='two columns', style={'textAlign' : 'center'})
 				], className='row', style={'textAlign' : 'center'}),
@@ -452,12 +452,13 @@ def mag_bar_diagram(datatype, filter_mag, region_options):
 			eq = pd.read_csv('filtered_mags.csv')
 			places = eq['place'].tolist()
 			mags = eq['mag'].tolist()
+			depths = eq['depth'].tolist()
 
 			_, eplaces, _ = extract_places_regions(places)
 
 			seperate = []
 			for p in range(len(places)):
-				seperate.append([places[p].split(', '), mags[p]])
+				seperate.append([places[p].split(', '), mags[p], depths[p]])
 
 			state_regions = {}
 			for p in eplaces:
@@ -466,19 +467,18 @@ def mag_bar_diagram(datatype, filter_mag, region_options):
 					locr = sep[0]
 					if len(locr) == 2:
 						if locr[1] == p:
-							regions.append([locr[0], sep[1]])
+							regions.append([locr[0], sep[1], sep[2]])
 					if len(locr) != 2:
 						if locr[0] == p:
-							regions.append([locr[0], sep[1]])
+							regions.append([locr[0], sep[1], sep[2]])
 				state_regions[p] = regions
 			state_regions['World Wide'] = []
 
 			region_places = list(state_regions.keys())
 			region_places.remove('World Wide')
 
-			traces = []
-			bar_region = []
-			bar_mag = []
+			traces = []; bar_region = []
+			bar_mag = []; bar_depth = []
 			if region_options in region_places:
 				for k, v in state_regions.items():
 					if k == region_options:
@@ -486,15 +486,18 @@ def mag_bar_diagram(datatype, filter_mag, region_options):
 						for about in details:
 							bar_region.append(about[0])
 							bar_mag.append(about[1])
-				bar_highlight = bar_chart_colouring(bar_mag)
+							bar_depth.append(about[2])
 				traces.append(
-					go.Bar(
-						x=bar_region, y=bar_mag,
+					go.Histogram2dContour(
+						x=bar_mag, y=bar_depth,
 						name='Region Magnitude',
-						marker=dict(color=bar_highlight)
+						colorscale='Viridis'
 					)
 				)
-				layout = go.Layout(title=str(region_options))
+				layout = go.Layout(
+					height=600,
+					title=str(region_options)
+				)
 				bar_state_region = html.Div([
 					dcc.Graph(id='state-region-bar', figure={'data' : traces, 'layout' : layout})
 				])
@@ -548,7 +551,7 @@ def pie_region_diagram(datatype, filter_mag):
 			_, regions, region_counts = extract_places_regions(places)
 			traces = []
 			traces.append(
-				go.Pie(labels=regions, values=region_counts, pull=.1)
+				go.Pie(labels=regions, values=region_counts, pull=.05)
 			)
 			layout = go.Layout(title='World Wide')
 			pie_chart = html.Div([
