@@ -287,8 +287,8 @@ def grab_region_options(datatype, filter_mag):
 	[Input('region-options', 'options')],
 	events=[Event('live-update', 'interval')]
 )
-def set_region_value(region_options):
-	return region_options[0]['value']
+# def set_region_value(region_options):
+# 	return region_options[0]['value']
 ##################################################
 
 # 'Canada': [['165km WNW of Haines Junction', 61.4201, -140.2431, 
