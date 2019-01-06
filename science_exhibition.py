@@ -22,29 +22,46 @@ index_page = html.Div([
 	html.Div([
 		html.H1('Earthquakes - Seismic Analysis', style={'textAlign' : 'center'}),
 		html.Div([
-			html.H3('Earthquake is a sudden shaking surface of the earth creating seismic waves. They are measured in terms of magnitude that signifies the occurrence type, basically varies from those that are so weak that they cannot be felt to those that are tremendous enough to create a widespread havoc.'),
+			html.H4('Earthquake is a sudden shaking surface of the earth creating seismic waves. They are measured in terms of magnitude that signifies the occurrence type, basically varies from those that are so weak that they cannot be felt to those that are tremendous enough to create a widespread havoc.'),
 		], className='container', style={'backgroundColor' : '#1C2833'}
 		),
 	], style={'color' : '#fff'}),
 
-	html.Hr(),
+	# html.Hr(),
 
 	html.Div([
-		html.Div([html.H2('National Earthquake Report')], className='container'),
+		html.Div([html.H2('National Earthquake Information Center')], className='container'),
 		html.Div([
-			html.H4('NEIC (National Earthquake Information Center) reports that 12000 - 14000 earthquakes happen each year. Smaller earthquakes of magnitude 2 occur several hundred times a day world wide and Major earthquakes of magnitude greater than 7 happen more than a once per month.')
+			html.H4('NEIC (National Earthquake Information Center) is a part of United States Geological Survey (USGS) located on the campus of the Colorado School of Mines. The NEIC has three main missions:'),
+			html.Ul([
+				html.H5(html.Li('Determine the location and size of all significant earthquakes that occur worldwide.')),
+				html.H5(html.Li('Provide an extensive seismic database to scientists for doing scientific research.')),
+				html.H5(html.Li('Improve the ability to locate earthquakes and understand its mechanism.'))
+			]),
 		], className='container', style={'backgroundColor' : '#1C2833'}),
-		html.Div([html.H3('Major Earthquakes')], className='container'),
 		html.Div([
-			html.H5('The largest recorded earthquake was Great Chilean Earthquake of May 22, 1960 which had a magnitude of 9.5. The great earthquake in  2004 in Sumatra, Indonesia measuring magnitude 9.1 produced Tsunamis that caused widespread disaster in 14 countries. In 2011, earthquake of japan having magnitude 9.0 also caused Tsunamis.')
+			html.H4('This reports that 12000 - 14000 earthquakes happen each year.'),
+			html.Ul([
+				html.H5(html.Li('Smaller earthquakes of magnitude 2 occur several hundred times a day world wide.')),
+				html.H5(html.Li('Major earthquakes of magnitude greater than 7 happen more than a once per month.'))
+			])
+		], className='container', style={'backgroundColor' : '#1C2833'}),
+		html.Div([html.H2('Major Earthquakes')], className='container'),
+		html.Div([
+			html.Ul([
+				html.H4(html.Li('The Great Chilean Earthquake of May 22, 1960 had a magnitude of 9.5.')),
+				html.H4(html.Li('The earthquake of Sumatra and Indonesia in 2004 had a magnitude of 9.1.')),
+				html.H4(html.Li('The earthquake of Japan in 2011 had a magnitude of 9.0.'))
+			]),
+			# html.H3('The largest recorded earthquake was Great Chilean Earthquake of May 22, 1960 which had a magnitude of 9.5. The great earthquake in  2004 in Sumatra, Indonesia measuring magnitude 9.1 produced Tsunamis that caused widespread disaster in 14 countries. In 2011, earthquake of japan having magnitude 9.0 also caused Tsunamis.')
 		], className='container', style={'backgroundColor' : '#1C2833'})
 	], style={'color' : '#fff'}),
 
 	html.Div([
-		html.H4('What are the major causes of Earthquakes and how is it identified/measured?', className='nine columns',
+		html.H4('To know how earthquakes are measured and located', className='nine columns',
 			style={'textAlign' : 'center', 'backgroundColor' : '#1C2833'}),
-		dcc.Link('Check this out', href='video-page', className='three columns', 
-			style={'textAlign' : 'left', 'margin-top' : 30})
+		dcc.Link('Click here', href='video-page', className='three columns', 
+			style={'textAlign' : 'left', 'margin-top' : 20})
 	], className='row container', style={'color' : '#fff'}),
 
 	# html.Div([
@@ -54,8 +71,8 @@ index_page = html.Div([
 	# ], className='container'),
 
 	html.Div([
-		html.H2('Explore the Seismic Analysis', className='eight columns', style={'color' : '#fff', 'textAlign' : 'right'}),
-		dcc.Link('Here', href='/seismic_about-page', className='four columns', style={'margin-top' : 30, 'textAlign' : 'left'})
+		html.H2('To explore the Seismic Analysis', className='eight columns', style={'color' : '#fff', 'textAlign' : 'right'}),
+		dcc.Link('Click here', href='/seismic_about-page', className='four columns', style={'margin-top' : 30, 'textAlign' : 'left'})
 	], className='row container'),
 
 ], style={'background-image' : 'url(http://www.zouros.gr/wp-content/uploads/2016/10/world-map-background.jpg)', 
@@ -88,8 +105,8 @@ seismic_layout = html.Div([
 			style={'textAlign' : 'left', 'margin-top' : 25})
 	], className='row container'),
 	html.Div([
-		html.H5('The Seismic data are renedred from the official USGS website and updated every 5 minutes. This makes the Data Management handy.'),
-		html.H5("Magnitude is the best available estimate of earthquake's size. It is the measure of the size of an earthquake at its source. At the same distance from the earthquake, the amplitude of the seismic waves from which the magnitude is determined are approximately 10 times as large during a magnitude 5 earthquake as during a magnitude 4 earthquake.")
+		html.H4('The Seismic data are rendered from the official USGS website and updated every 5 minutes. This makes the Data Management handy.'),
+		html.H4("Magnitude is the best available estimate of earthquakes' size. It is the measure of the size of an earthquake at its source.")
 	], className='container', style={'backgroundColor' : '#1C2833'}),
 	html.Div([
 		html.H3('Earthquake History', className='five columns', style={'textAlign' : 'right'}),
@@ -97,10 +114,10 @@ seismic_layout = html.Div([
 			style={'textAlign' : 'left', 'margin-top' : 25})
 	], className='row container'),
 	html.Div([
-		html.H5('Ih this, we have considered only last 30 days of seismic data due to some constraints. Even here, the data are being updated every 15 minutes.'),
-		html.H5("Earthquakes are commonly complex events that release energy over a wide range of frequencies and at varying amounts as faulting or rupture process occurs. The various types of magnitude measure different aspects of the seismic radiation.")
+		html.H4('In this, we have considered only last 30 days of seismic data due to some constraints. Even here, the data are being updated every 15 minutes.'),
+		html.H4("Earthquakes are complex events that release energy over a wide range of frequencies and at varying amounts as faulting or rupture that happens to occur. The various types of magnitudes measure the different aspects of the seismic radiation.")
 	], className='container', style={'backgroundColor' : '#1C2833'}),
-	html.Div([html.H4('Prediction -- Work in Progress...')], className='container')
+	html.Div([html.H4('Please click the side links to see the actual analysis.')], className='container')
 ], style={'color' : '#fff', 
 					'background-image' : 'url(http://www.zouros.gr/wp-content/uploads/2016/10/world-map-background.jpg)',
 					'background-repeat' : 'no-repeat', 'background-size' : 'cover', 
@@ -724,9 +741,11 @@ def display_quakes_day(start, end, query):
 		map_deisgn = html.Div([
 			dcc.Graph(id='map-earthquake', figure={'data' : quakes, 'layout' : layout})
 		])
+		time.sleep(2)
 		return map_deisgn
 		
 	except Exception as e:
+		time.sleep(2)
 		return html.Div([
 			html.H4('Network issues, could not load the map'),
 			html.H2('Try refreshing the page...'),
