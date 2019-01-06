@@ -47,11 +47,16 @@ index_page = html.Div([
 			style={'textAlign' : 'left', 'margin-top' : 30})
 	], className='row container', style={'color' : '#fff'}),
 
+	# html.Div([
+	# 	dcc.Link('Real Time Analysis', href='/realtime_analysis-page'),
+	# 	html.Br(),
+	# 	dcc.Link('Earthquake History', href='/earthquake_history-page'),
+	# ], className='container'),
+
 	html.Div([
-		dcc.Link('Real Time Analysis', href='/realtime_analysis-page'),
-		html.Br(),
-		dcc.Link('Earthquake History', href='/earthquake_history-page'),
-	], className='container'),
+		html.H2('Explore the Seismic Analysis', className='eight columns', style={'color' : '#fff', 'textAlign' : 'right'}),
+		dcc.Link('Here', href='/seismic_about-page', className='four columns', style={'margin-top' : 30, 'textAlign' : 'left'})
+	], className='row container'),
 
 ], style={'background-image' : 'url(http://www.zouros.gr/wp-content/uploads/2016/10/world-map-background.jpg)', 
 					'background-repeat' : 'no-repeat', 'background-size' : 'cover', 
@@ -61,18 +66,47 @@ index_page = html.Div([
 
 ################# video page #####################
 video_layout = html.Div([
+	html.H2('YouTube Tutorial', style={'color' : '#fff', 'textAlign' : 'center'}),
+	html.Div([dcc.Link('Back to Home', href='/')], className='container'),
 	html.Div([
-		html.H2('YouTube Tutorial', style={'color' : '#fff'}),
 		html.Iframe(src=f'https://www.youtube.com/embed/{"dx4OqT0PYnU"}', 
-			style={'height' : 500, 'width' : 800})
+			style={'height' : 500, 'width' : 800, 'margin-top' : 30})
 	], style={'textAlign' : 'center'}),
-	html.Div([
-		dcc.Link('Back to Home', href='/')
-	], className='container')
 ], style={'background-image' : 'url(http://www.zouros.gr/wp-content/uploads/2016/10/world-map-background.jpg)', 
 					'background-repeat' : 'no-repeat', 'background-size' : 'cover', 
 					'background-position' : 'center'}
 )
+##################################################
+
+################# seismic about page #####################
+seismic_layout = html.Div([
+	html.H2('About the Project', style={'textAlign' : 'center'}),
+	html.Div([dcc.Link('Back to Home', href='/')], className='container'),
+	html.Div([
+		html.H3('Real Time Analysis', className='five columns', style={'textAlign' : 'right'}),
+		dcc.Link('Real Time Analysis', href='/realtime_analysis-page', className='seven columns', 
+			style={'textAlign' : 'left', 'margin-top' : 25})
+	], className='row container'),
+	html.Div([
+		html.H5('The Seismic data are renedred from the official USGS website and updated every 5 minutes. This makes the Data Management handy.'),
+		html.H5("Magnitude is the best available estimate of earthquake's size. It is the measure of the size of an earthquake at its source. At the same distance from the earthquake, the amplitude of the seismic waves from which the magnitude is determined are approximately 10 times as large during a magnitude 5 earthquake as during a magnitude 4 earthquake.")
+	], className='container', style={'backgroundColor' : '#1C2833'}),
+	html.Div([
+		html.H3('Earthquake History', className='five columns', style={'textAlign' : 'right'}),
+		dcc.Link('Earthquake History', href='/earthquake_history-page', className='seven columns', 
+			style={'textAlign' : 'left', 'margin-top' : 25})
+	], className='row container'),
+	html.Div([
+		html.H5('Ih this, we have considered only last 30 days of seismic data due to some constraints. Even here, the data are being updated every 15 minutes.'),
+		html.H5("Earthquakes are commonly complex events that release energy over a wide range of frequencies and at varying amounts as faulting or rupture process occurs. The various types of magnitude measure different aspects of the seismic radiation.")
+	], className='container', style={'backgroundColor' : '#1C2833'}),
+	html.Div([html.H4('Prediction -- Work in Progress...')], className='container')
+], style={'color' : '#fff', 
+					'background-image' : 'url(http://www.zouros.gr/wp-content/uploads/2016/10/world-map-background.jpg)',
+					'background-repeat' : 'no-repeat', 'background-size' : 'cover', 
+					'background-position' : 'center'}
+)
+#######################################################
 
 measuring_mags = [1.0, 2.0, 3.0, 4.0, 4.5, 5.0, 5.5, 6.0, 6.5, 7.0, 8.0]
 radius_multiplier = {'inner' : 1.5, 'outer' : 3}
@@ -124,7 +158,7 @@ def extract_places_regions(eq_places):
 realtime_analysis_layout = html.Div([
 
 	html.Div([
-		dcc.Link('Back to Home', href='/', className='six columns', style={'textAlign' : 'left'}),
+		dcc.Link('Back to About', href='/seismic_about-page', className='six columns', style={'textAlign' : 'left'}),
 		dcc.Link('Earthquake History', href='/earthquake_history-page', className='six columns', style={'textAlign' : 'right'})
 	], className='container'),
 
@@ -220,11 +254,11 @@ def grab_region_options(datatype, filter_mag):
 	regions.insert(0, 'World Wide')
 	return [{'label' : s, 'value' : s} for s in regions]
 
-@app.callback(
-	Output('region-options', 'value'),
-	[Input('region-options', 'options')],
-	events=[Event('live-update', 'interval')]
-)
+# @app.callback(
+# 	Output('region-options', 'value'),
+# 	[Input('region-options', 'options')],
+# 	events=[Event('live-update', 'interval')]
+# )
 # def set_region_value(region_options):
 # 	return region_options[0]['value']
 ##################################################
@@ -338,8 +372,8 @@ def plot_earthquakes(datatype, filter_mag, region_options):
 
 	except Exception as e:
 		return html.Div([
-			html.H4('Network issues, could not load the map'),
-			html.H2('Try refreshing the page...')
+			html.H4('Could not load the map for some reasons'),
+			html.H2('Please select the input...')
 		], style={'margin-top' : 200, 'margin-bottom' : 200, 'textAlign' : 'center'})
 ##################################################
 
@@ -601,7 +635,7 @@ def history_eq(eq_some, zoom_value):
 earthquake_history_layout = html.Div([
 
 	html.Div([
-		dcc.Link('Back to Home', href='/', className='six columns', style={'textAlign' : 'left'}),
+		dcc.Link('Back to About', href='/seismic_about-page', className='six columns', style={'textAlign' : 'left'}),
 		dcc.Link('Real Time Analysis', href='/realtime_analysis-page', className='six columns', style={'textAlign' : 'right'})
 	], className='container'),
 
@@ -708,6 +742,8 @@ def display_page(pathname):
 		return earthquake_history_layout
 	elif pathname == '/video-page':
 		return video_layout
+	elif pathname == '/seismic_about-page':
+		return seismic_layout
 	else:
 		return index_page
 
@@ -721,3 +757,4 @@ for js in external_js:
 
 if __name__ == '__main__':
 	app.run_server(debug=True)
+
