@@ -17,12 +17,12 @@ app.layout = html.Div([
 	html.Div(id='page-content')
 ])
 
+##################### home page ##################
 index_page = html.Div([
 	html.Div([
 		html.H1('Earthquakes - Seismic Analysis', style={'textAlign' : 'center'}),
 		html.Div([
 			html.H3('Earthquake is a sudden shaking surface of the earth creating seismic waves. They are measured in terms of magnitude that signifies the occurrence type, basically varies from those that are so weak that they cannot be felt to those that are tremendous enough to create a widespread havoc.'),
-			html.H3('The word earthquake is used to describe any seismic event — whether natural or unusual — that generates seismic waves, and are normally caused by the rupture of geological faults, volcanic activity, landslides, nuclear tests etc.')
 		], className='container', style={'backgroundColor' : '#1C2833'}
 		),
 	], style={'color' : '#fff'}),
@@ -30,8 +30,22 @@ index_page = html.Div([
 	html.Hr(),
 
 	html.Div([
-		html.Div([html.H2('About')],className='container'),
+		html.Div([html.H2('National Earthquake Report')], className='container'),
+		html.Div([
+			html.H4('NEIC (National Earthquake Information Center) reports that 12000 - 14000 earthquakes happen each year. Smaller earthquakes of magnitude 2 occur several hundred times a day world wide and Major earthquakes of magnitude greater than 7 happen more than a once per month.')
+		], className='container', style={'backgroundColor' : '#1C2833'}),
+		html.Div([html.H3('Major Earthquakes')], className='container'),
+		html.Div([
+			html.H5('The largest recorded earthquake was Great Chilean Earthquake of May 22, 1960 which had a magnitude of 9.5. The great earthquake in  2004 in Sumatra, Indonesia measuring magnitude 9.1 produced Tsunamis that caused widespread disaster in 14 countries. In 2011, earthquake of japan having magnitude 9.0 also caused Tsunamis.')
+		], className='container', style={'backgroundColor' : '#1C2833'})
 	], style={'color' : '#fff'}),
+
+	html.Div([
+		html.H4('What are the major causes of Earthquakes and how is it identified/measured?', className='nine columns',
+			style={'textAlign' : 'center', 'backgroundColor' : '#1C2833'}),
+		dcc.Link('Check this out', href='video-page', className='three columns', 
+			style={'textAlign' : 'left', 'margin-top' : 30})
+	], className='row container', style={'color' : '#fff'}),
 
 	html.Div([
 		dcc.Link('Real Time Analysis', href='/realtime_analysis-page'),
@@ -39,6 +53,22 @@ index_page = html.Div([
 		dcc.Link('Earthquake History', href='/earthquake_history-page'),
 	], className='container'),
 
+], style={'background-image' : 'url(http://www.zouros.gr/wp-content/uploads/2016/10/world-map-background.jpg)', 
+					'background-repeat' : 'no-repeat', 'background-size' : 'cover', 
+					'background-position' : 'center'}
+)
+##################################################
+
+################# video page #####################
+video_layout = html.Div([
+	html.Div([
+		html.H2('YouTube Tutorial', style={'color' : '#fff'}),
+		html.Iframe(src=f'https://www.youtube.com/embed/{"dx4OqT0PYnU"}', 
+			style={'height' : 500, 'width' : 800})
+	], style={'textAlign' : 'center'}),
+	html.Div([
+		dcc.Link('Back to Home', href='/')
+	], className='container')
 ], style={'background-image' : 'url(http://www.zouros.gr/wp-content/uploads/2016/10/world-map-background.jpg)', 
 					'background-repeat' : 'no-repeat', 'background-size' : 'cover', 
 					'background-position' : 'center'}
@@ -90,6 +120,7 @@ def extract_places_regions(eq_places):
 
 	return splaces, regions, region_counts
 
+##################### real time analysis ##################
 realtime_analysis_layout = html.Div([
 
 	html.Div([
@@ -101,7 +132,7 @@ realtime_analysis_layout = html.Div([
 
 	html.Div([html.H3('Earthquake Data Plotting', style={'textAlign' : 'center', 'margin-top' : 30, 'margin-bottom' : 30}),
 		html.Div([
-			html.Div([html.H5('Date and Day')], className='three columns', style={'textAlign' : 'right'}),
+			html.Div([html.H5('Occurence')], className='three columns', style={'textAlign' : 'right'}),
 			html.Div([
 				dcc.Dropdown(
 					id='datatype',
@@ -194,8 +225,8 @@ def grab_region_options(datatype, filter_mag):
 	[Input('region-options', 'options')],
 	events=[Event('live-update', 'interval')]
 )
-def set_region_value(region_options):
-	return region_options[0]['value']
+# def set_region_value(region_options):
+# 	return region_options[0]['value']
 ##################################################
 
 # 'Canada': [['165km WNW of Haines Junction', 61.4201, -140.2431, 
@@ -675,6 +706,8 @@ def display_page(pathname):
 		return realtime_analysis_layout
 	elif pathname == '/earthquake_history-page':
 		return earthquake_history_layout
+	elif pathname == '/video-page':
+		return video_layout
 	else:
 		return index_page
 
