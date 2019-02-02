@@ -9,7 +9,7 @@ import plotly.graph_objs as go
 from dash.dependencies import (Input, Output, Event)
 
 from design_layout import (index_page, realtime_analysis_layout, earth_history_layout, colors_useful)
-from realtime_details import (grab_appropriate_data, extract_places_regions, radius_multiplier)
+from realtime_details import (grab_appropriate_data, extract_places_regions, radius_multiplier, center_location)
 from report_alerts import (seismic_reporting_data, get_all_felts, get_all_tsunamis, get_all_alerts, make_seismic_report, make_alert_report)
 
 app = dash.Dash(__name__)
@@ -55,6 +55,7 @@ def grab_region_options(occurence_type, mag_value):
 def plot_earthquakes(occurence_type, mag_value, region_options):
 	try:
 		eq = grab_appropriate_data(occurence_type, mag_value)
+		c_lat, c_lon = center_location(eq, region_options)
 
 		latitudes = eq['latitude'].tolist()
 		longitudes = eq['longitude'].tolist()
@@ -135,13 +136,17 @@ def plot_earthquakes(occurence_type, mag_value, region_options):
 		  ),
 		  mapbox=dict(
 		    accesstoken=map_token, bearing=1,
-				center=dict(lat=lats[0], lon=lons[0]),
+				center=dict(lat=c_lat, lon=c_lon),
 				pitch=0, zoom=zoom_value, 
 				style='mapbox://styles/chaotic-enigma/cjpbbmuzmadb12spjq5n07nd1'
 			)
 		)
 		map_deisgn = html.Div([
-			dcc.Graph(id='map-earthquake', figure={'data' : quakes, 'layout' : layout})
+			dcc.Graph(
+				id='map-earthquake', 
+				figure={'data' : quakes, 'layout' : layout},
+				config={'displayModeBar' : False}
+			)
 		])
 		return map_deisgn
 

@@ -42,3 +42,26 @@ def extract_places_regions(eq_places):
 	region_counts = list(counter_places.values())
 
 	return splaces, regions, region_counts
+
+def center_location(some_df, r_name):
+
+	'''
+	This is used to locate the highest magnitude earthquake at the center
+	Parameters : `some_df` -> earthquake DataFrame
+	Return : `c_lat` & `c_lon` -> `tuple`
+	'''
+
+	if r_name == 'World Wide':
+		max_mag = max(some_df['mag'])
+		center_details = some_df[some_df['mag'] == max_mag]
+		c_lat = center_details['latitude'].tolist()
+		c_lon = center_details['longitude'].tolist()
+		return c_lat[0], c_lon[0]
+	else:
+		r_df = some_df[some_df['place'].str.contains(str(r_name))]
+		max_mag = max(r_df['mag'])
+		center_details = r_df[r_df['mag'] == max_mag]
+		c_lat = center_details['latitude'].tolist()
+		c_lon = center_details['longitude'].tolist()
+		return c_lat[0], c_lon[0]
+
