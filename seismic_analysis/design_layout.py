@@ -8,12 +8,9 @@ from realtime_details import measuring_mags
 from historical_overview import select_countries
 
 colors_useful = {
-	'text_back' : '#d5dbdb',
-	'text_color' : '#17202a',
-	'heading_back' : '#f7dc6f',
-	'link_back' : '#9b59b6',
-	'btn_color' : '#f5b041',
-	'light_shade_back' : '#abebc6',
+	'text_color' : '#154360',
+	'btn_color' : '#d4e6f1',
+	'light_shade_back' : '#ebf5fb',
 	'bar_max_val' : 'rgba(222,45,38,0.8)',
 	'bar_normal' : 'rgb(41,128,185)',
 	'bar_min_val' : 'rgb(40,180,99)'
@@ -26,50 +23,55 @@ en_logo = b64.b64encode(open(logo_image, 'rb').read())
 ##################### home page ##################
 index_page = html.Div([
 	html.Div([
-		html.H2('Earthquakes - Seismic Analysis', className='container', 
-			style={'textAlign' : 'left', 'backgroundColor' : colors_useful['heading_back']}),
 		html.Div([
-			html.H4('Earthquake is a sudden shaking surface of the earth creating seismic waves. They are measured in terms of magnitude that signifies the occurrence type, basically varies from those that are so weak that they cannot be felt to those that are tremendous enough to create a widespread havoc.'),
-		], className='container', style={'backgroundColor' : colors_useful['text_back']}),
-	], style={'color' : colors_useful['text_color']}),
-	html.Div([
-		html.Div([html.H2('National Earthquake Information Center', 
-			style={'backgroundColor' : colors_useful['heading_back']})], className='container'),
-		html.Div([
-			html.H4('NEIC (National Earthquake Information Center) is a part of United States Geological Survey (USGS) located in the campus of the Colorado School of Mines. The NEIC has three main missions:'),
-			html.Ul([
-				html.H5(html.Li('Determine the location and size of all significant earthquakes that occur worldwide.')),
-				html.H5(html.Li('Provide an extensive seismic database to scientists for doing scientific research.')),
-				html.H5(html.Li('Improve the ability to locate earthquakes and understand its mechanism.'))
+			html.H2('Earthquakes - Seismic Analysis', 
+				style={'textAlign' : 'left', 'textDecoration' : 'underline'}),
+			html.Div([
+				html.H5('Earthquake is a sudden shaking surface of the earth creating seismic waves. They are measured in terms of magnitude that signifies the occurrence type, basically varies from those that are so weak that they cannot be felt to those that are tremendous enough to create a widespread havoc.'),
 			]),
-		], className='container', style={'backgroundColor' : colors_useful['text_back']}),
+		]),
 		html.Div([
-			html.H4('This reports that 12000 - 14000 earthquakes happen each year.'),
-			html.Ul([
-				html.H5(html.Li('Smaller earthquakes of magnitude 2 occur several hundred times a day world wide.')),
-				html.H5(html.Li('Major earthquakes of magnitude greater than 7 happen more than a once per month.'))
-			])
-		], className='container', style={'backgroundColor' : colors_useful['text_back']}),
-		html.Div([html.H2('Major Earthquakes', 
-			style={'backgroundColor' : colors_useful['heading_back']})], className='container'),
+			html.Div([
+				html.Div([html.H2('National Earthquake Information Center', style={'textDecoration' : 'underline'})]),
+				html.Div([
+					html.H5('NEIC (National Earthquake Information Center) is a part of United States Geological Survey (USGS) located in the campus of the Colorado School of Mines. The NEIC has three main missions:'),
+					html.Ul([
+						html.H6(html.Li('Determine the location and size of all significant earthquakes that occur worldwide.')),
+						html.H6(html.Li('Provide an extensive seismic database to scientists for doing scientific research.')),
+						html.H6(html.Li('Improve the ability to locate earthquakes and understand its mechanism.'))
+					], className='container'),
+				]),
+				html.Div([
+					html.H5('This reports that 12000 - 14000 earthquakes happen each year.'),
+					html.Ul([
+						html.H6(html.Li('Smaller earthquakes of magnitude 2 occur several hundred times a day world wide.')),
+						html.H6(html.Li('Major earthquakes of magnitude greater than 7 happen more than a once per month.'))
+					], className='container')
+				]),
+			], style={'margin-top' : 40}),
+
+			html.Div([
+				html.Div([html.H2('Major Earthquakes', style={'textDecoration' : 'underline'})]),
+				html.Div([
+					html.Ul([
+						html.H6(html.Li('The Great Chilean Earthquake of May 22, 1960 had a magnitude of 9.5.')),
+						html.H6(html.Li('The earthquake of Sumatra and Indonesia in 2004 had a magnitude of 9.1.')),
+						html.H6(html.Li('The earthquake of Japan in 2011 had a magnitude of 9.0.'))
+					]),
+				])
+			], style={'margin-top' : 40})
+		]),
+
 		html.Div([
-			html.Ul([
-				html.H4(html.Li('The Great Chilean Earthquake of May 22, 1960 had a magnitude of 9.5.')),
-				html.H4(html.Li('The earthquake of Sumatra and Indonesia in 2004 had a magnitude of 9.1.')),
-				html.H4(html.Li('The earthquake of Japan in 2011 had a magnitude of 9.0.'))
-			]),
-		], className='container', style={'backgroundColor' : colors_useful['text_back']})
-	], style={'color' : colors_useful['text_color']}),
+			html.H2('To explore the Seismic Analysis', className='eight columns', 
+				style={'textAlign' : 'right'}),
+			dcc.Link(html.Button('Explore here', style={'backgroundColor' : colors_useful['btn_color']}), href='/realtime_analysis-page', className='four columns', style={'margin-top' : 22, 'textAlign' : 'left'})
+		], className='row', style={'margin-top' : 40}),
+	], className='container', style={'backgroundColor' : '#fff', 'padding' : '30px 30px', 'boxShadow' : '8px 8px #d4e6f1', 'border' : 'thin #e5e8e8 solid', 'fontFamily' : 'Dosis, sans-serif'})
 
-	html.Div([
-		html.H2('To explore the Seismic Analysis', className='eight columns', 
-			style={'color' : colors_useful['text_color'], 'textAlign' : 'right', 'backgroundColor' : colors_useful['heading_back']}),
-		dcc.Link(html.Button('Explore here', style={'backgroundColor' : colors_useful['btn_color']}), href='/realtime_analysis-page', className='four columns', style={'margin-top' : 30, 'textAlign' : 'left'})
-	], className='row container'),
+], style={'backgroundColor' : '#eaf2f8', 'padding' : '60px 60px', 'color' : colors_useful['text_color']}
+# style={'background-image' : 'url(https://static.vecteezy.com/system/resources/previews/000/101/237/non_2x/free-abstract-background-11-vector.jpg)', 'background-repeat' : 'no-repeat', 'background-size' : 'cover', 'background-position' : 'center', 'padding' : '20px 20px'}
 
-], style={'background-image' : 'url(https://www.google.com/url?sa=i&rct=j&q=&esrc=s&source=images&cd=&cad=rja&uact=8&ved=2ahUKEwinxKaGj5_gAhVRfysKHfY5Bc4QjRx6BAgBEAU&url=https%3A%2F%2Fwallup.net%2Fabstract-low-poly-13%2F&psig=AOvVaw1AFAxAJGtNV0DMDhHRpmQM&ust=1549267933240309)',
-					'background-repeat' : 'no-repeat', 'background-size' : 'cover', 
-					'background-position' : 'center', 'padding' : '20px 20px'}
 )
 ##################################################
 
@@ -83,7 +85,7 @@ realtime_analysis_layout = html.Div([
 
 	dcc.Interval(id='live-update', interval='300000'), # update every 5 min
 
-	html.Div([html.H3('Earthquake Data Plotting', style={'textAlign' : 'center', 'margin-top' : 30, 'margin-bottom' : 30}),
+	html.Div([html.H3('Seismic Data Visualization', style={'textAlign' : 'center', 'margin-top' : 30, 'margin-bottom' : 30}),
 		html.Div([
 			html.Div([html.H5('Occurence')], className='three columns', style={'textAlign' : 'right'}),
 			html.Div([
@@ -180,7 +182,7 @@ realtime_analysis_layout = html.Div([
 		], className='row', style={'margin-top' : 30}),
 	
 	])
-])
+], style={'fontFamily' : 'Dosis, sans-serif'})
 ##################################################################
 
 #################### earthquake history ##########################
@@ -213,7 +215,7 @@ earth_history_layout = html.Div([
 		'margin-right' : 30, 'margin-top' : 40, 'textAlign' : 'center'
 	}),
 	html.Div(id='history-map')
-])
+], style={'fontFamily' : 'Dosis, sans-serif'})
 ##################################################################
 
 ################################ layout page #####################################
