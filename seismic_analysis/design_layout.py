@@ -2,6 +2,7 @@ import dash
 import base64
 import dash_core_components as dcc
 import dash_html_components as html
+import base64 as b64
 
 from realtime_details import measuring_mags
 from historical_overview import select_countries
@@ -17,6 +18,9 @@ colors_useful = {
 	'bar_normal' : 'rgb(41,128,185)',
 	'bar_min_val' : 'rgb(40,180,99)'
 }
+
+logo_image = 'cartoon-globe.png'
+en_logo = b64.b64encode(open(logo_image, 'rb').read())
 
 ################################ layout page #####################################
 ##################### home page ##################
@@ -63,7 +67,7 @@ index_page = html.Div([
 		dcc.Link(html.Button('Explore here', style={'backgroundColor' : colors_useful['btn_color']}), href='/realtime_analysis-page', className='four columns', style={'margin-top' : 30, 'textAlign' : 'left'})
 	], className='row container'),
 
-], style={'background-image' : 'url(https://c2.staticflickr.com/4/3379/3416405092_b3d48f7b2d_z.jpg?zz=1)', 
+], style={'background-image' : 'url(https://c2.staticflickr.com/4/3379/3416405092_b3d48f7b2d_z.jpg?zz=1)',
 					'background-repeat' : 'no-repeat', 'background-size' : 'cover', 
 					'background-position' : 'center', 'padding' : '20px 20px'}
 )
@@ -189,8 +193,12 @@ earth_history_layout = html.Div([
 
 	html.Div([
 		html.Div([
+			html.Img(src='data:image/png;base64,{}'.format(en_logo.decode()), id='logo',
+				style={'width' : 70, 'height' : 70})
+		], className='two columns', style={'textAlign' : 'right'}),
+		html.Div([
 			html.H5('Country wise occurence')
-		], className='five columns', style={'textAlign' : 'right'}),
+		], className='three columns', style={'textAlign' : 'right', 'margin-top' : 15}),
 		html.Div([
 			dcc.Dropdown(
 				id='countries-dropdown',
@@ -198,11 +206,11 @@ earth_history_layout = html.Div([
 				value='JP',
 				placeholder='Select Country: ',
 			)
-		], className='seven columns', style={'width' : 400, 'textAlign' : 'left'}),
+		], className='seven columns', style={'width' : 400, 'textAlign' : 'left', 'margin-top' : 15}),
 	], className='row', style={'borderBottom' : 'thin lightgrey solid', 
 		'backgroundColor' : colors_useful['light_shade_back'], 
 		'padding': '40px 40px', 'margin-left' : 30, 
-		'margin-right' : 30, 'margin-top' : 40
+		'margin-right' : 30, 'margin-top' : 40, 'textAlign' : 'center'
 	}),
 	html.Div(id='history-map')
 ])
