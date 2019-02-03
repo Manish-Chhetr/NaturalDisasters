@@ -195,7 +195,7 @@ earth_history_layout = html.Div([
 		html.Div([
 			html.Img(src='data:image/png;base64,{}'.format(en_logo.decode()), id='logo',
 				style={'width' : 70, 'height' : 70})
-		], className='two columns', style={'textAlign' : 'right'}),
+		], className='three columns', style={'textAlign' : 'right'}),
 		html.Div([
 			html.H5('Country wise occurence')
 		], className='three columns', style={'textAlign' : 'right', 'margin-top' : 15}),
@@ -206,7 +206,7 @@ earth_history_layout = html.Div([
 				value='JP',
 				placeholder='Select Country: ',
 			)
-		], className='seven columns', style={'width' : 400, 'textAlign' : 'left', 'margin-top' : 15}),
+		], className='six columns', style={'width' : 400, 'textAlign' : 'left', 'margin-top' : 15}),
 	], className='row', style={'borderBottom' : 'thin lightgrey solid', 
 		'backgroundColor' : colors_useful['light_shade_back'], 
 		'padding': '40px 40px', 'margin-left' : 30, 
