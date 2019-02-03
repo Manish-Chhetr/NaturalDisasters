@@ -71,13 +71,13 @@ def get_country_name(earth_quake_df):
 eq_data_df = pd.read_csv('eq_database_place.csv')
 select_countries = get_country_name(eq_data_df)
 
-# import numpy as np
-# import math
-# japan = eq_data_df[eq_data_df['Place'].str.contains('JP')]
-# japan.dropna(1)
+#################################################################################
 
-# jp_seismic = japan[['Date', 'Time', 'Latitude', 'Longitude', 'Place', 'Type', 'Depth', 'Magnitude', 'Magnitude Type', 'Root Mean Square']]
+import numpy as np
+import math
 
-# rms = japan['Root Mean Square'].tolist()
-# non_nan_rms = [i for i in rms if math.isnan(i) == False]
-# print(len(jp_seismic))
+japan = eq_data_df[eq_data_df['Place'].str.contains('JP')]
+jp_seismic = japan[['Date', 'Time', 'Latitude', 'Longitude', 'Place', 'Depth', 'Magnitude', 'Magnitude Type', 'Type']]
+
+print(jp_seismic.head())
+print(len(jp_seismic))
