@@ -67,7 +67,7 @@ index_page = html.Div([
 		dcc.Link(html.Button('Explore here', style={'backgroundColor' : colors_useful['btn_color']}), href='/realtime_analysis-page', className='four columns', style={'margin-top' : 30, 'textAlign' : 'left'})
 	], className='row container'),
 
-], style={'background-image' : 'url(https://c2.staticflickr.com/4/3379/3416405092_b3d48f7b2d_z.jpg?zz=1)',
+], style={'background-image' : 'url(https://www.google.com/url?sa=i&rct=j&q=&esrc=s&source=images&cd=&cad=rja&uact=8&ved=2ahUKEwinxKaGj5_gAhVRfysKHfY5Bc4QjRx6BAgBEAU&url=https%3A%2F%2Fwallup.net%2Fabstract-low-poly-13%2F&psig=AOvVaw1AFAxAJGtNV0DMDhHRpmQM&ust=1549267933240309)',
 					'background-repeat' : 'no-repeat', 'background-size' : 'cover', 
 					'background-position' : 'center', 'padding' : '20px 20px'}
 )
