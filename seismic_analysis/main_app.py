@@ -143,7 +143,7 @@ def plot_earthquakes(occurence_type, mag_value, region_options):
 		)
 		map_deisgn = html.Div([
 			dcc.Graph(
-				id='map-earthquake', 
+				id='map-earthquake',
 				figure={'data' : quakes, 'layout' : layout},
 				config={'displayModeBar' : False}
 			)
@@ -168,7 +168,7 @@ def plot_earthquakes(occurence_type, mag_value, region_options):
 def display_people_reports(occurence_type, mag_value, region_options):
 	try:
 		report_list = get_all_felts(occurence_type, mag_value, region_options)
-		make_report = make_seismic_report(report_list, '#d35400', '#8e44ad')
+		make_report = make_seismic_report(report_list, colors_useful['loc_color'], colors_useful['report_color'])
 		return make_report
 	except TypeError as e:
 		return html.Div([
@@ -202,7 +202,7 @@ def display_alert_reports(occurence_type, mag_value, region_options):
 def display_tsunami_reports(occurence_type, mag_value, region_options):
 	try:
 		report_list = get_all_tsunamis(occurence_type, mag_value, region_options)
-		make_report = make_seismic_report(report_list, '#0240da', '#0240da')
+		make_report = make_seismic_report(report_list, colors_useful['tsunami_color'], colors_useful['tsunami_color'])
 		return make_report
 	except TypeError as e:
 		return html.Div([
