@@ -13,6 +13,7 @@ colors_useful = {
 	'bar_normal' : 'rgb(41,128,185)',
 	'bar_min_val' : 'rgb(40,180,99)',
 	'symmetry' : '#d0ece7',
+	'rev_symmetry' : '#fff',
 	'danger' : '#fc131a',
 	'loc_color' : '#d35400',
 	'report_color' : '#8e44ad',
@@ -70,7 +71,7 @@ index_page = html.Div([
 				style={'textAlign' : 'right'}),
 			dcc.Link(html.Button('Explore here', style={'backgroundColor' : colors_useful['symmetry'], 'color' : colors_useful['text_color']}), href='/realtime_analysis-page', className='four columns', style={'margin-top' : 22, 'textAlign' : 'left'})
 		], className='row', style={'margin-top' : 40}),
-	], className='container', style={'backgroundColor' : '#fff', 'padding' : '30px 30px', 'boxShadow' : '8px 8px #aed6f1', 'border' : 'thin #e5e8e8 solid', 'fontFamily' : 'Dosis, sans-serif'})
+	], className='container', style={'backgroundColor' : colors_useful['rev_symmetry'], 'padding' : '30px 30px', 'boxShadow' : '8px 8px #aed6f1', 'border' : 'thin #e5e8e8 solid', 'fontFamily' : 'Dosis, sans-serif'})
 
 ], style={'backgroundColor' : colors_useful['symmetry'], 'padding' : '60px 60px', 'color' : colors_useful['text_color']}
 )
@@ -80,9 +81,16 @@ index_page = html.Div([
 realtime_analysis_layout = html.Div([
 
 	html.Div([
-		dcc.Link(html.Button('Back to Home', style={'backgroundColor' : colors_useful['symmetry'], 'color' : colors_useful['text_color']}), href='/', className='six columns', style={'textAlign' : 'left'}),
-		dcc.Link(html.Button('Earthquake History', style={'backgroundColor' : colors_useful['symmetry'], 'color' : colors_useful['text_color']}), href='/earthquake_history-page', className='six columns', style={'textAlign' : 'right'})
-	], className='container'),
+		dcc.Link(html.Button('Home', style={'backgroundColor' : '#fff', 'color' : colors_useful['text_color']}), href='/', className='six columns', style={'textAlign' : 'center'}),
+		dcc.Link(html.Button('Earthquake History', style={'backgroundColor' : '#fff', 'color' : colors_useful['text_color']}), href='/earthquake_history-page', className='six columns', style={'textAlign' : 'center'})
+	], className='row', style={'backgroundColor' : colors_useful['symmetry'], 'padding' : '20px 20px', 'margin-right' : 30, 'margin-left' : 30}),
+
+	# html.Div([
+	# 	html.Nav([
+	# 		html.A(html.Button('Home', style={'backgroundColor' : colors_useful['rev_symmetry']}), href='/', className='nav-item nav-link btn'),
+	# 		html.A(html.Button('Earthquake History', style={'backgroundColor' : colors_useful['rev_symmetry']}), href='/earthquake_history-page', className='nav-item nav-link active btn')
+	# 	], className='nav nav-pills', style={'backgroundColor' : colors_useful['symmetry']})
+	# ]),
 
 	dcc.Interval(id='live-update', interval='300000'), # update every 5 min
 
@@ -124,8 +132,10 @@ realtime_analysis_layout = html.Div([
 			'color' : colors_useful['text_color']
 	}),
 
+	html.Div(id='highest-mag', style={'color' : colors_useful['danger'], 'margin-top' : 50}),
+
 	html.Div([
-		html.Div(id='map-output', className='nine columns', style={'margin-top' : 20}),
+		html.Div(id='map-output', className='nine columns', style={'margin-top' : 5}),
 		html.Div([
 			html.Div([
 				html.H6('Number(s) Reported', style={'backgroundColor' : colors_useful['symmetry'], 'textAlign' : 'center'}),
@@ -151,7 +161,6 @@ realtime_analysis_layout = html.Div([
 	html.Hr(),
 
 	html.Div([
-		html.Div(id='highest-mag', style={'color' : colors_useful['danger']}),
 		html.Div([
 			html.Div([
 				html.H6('Total Earthquakes across the states',
@@ -192,9 +201,9 @@ realtime_analysis_layout = html.Div([
 earth_history_layout = html.Div([
 
 	html.Div([
-		dcc.Link(html.Button('Back to Home', style={'backgroundColor' : colors_useful['symmetry'], 'color' : colors_useful['text_color']}), href='/', className='six columns', style={'textAlign' : 'left'}),
-		dcc.Link(html.Button('Real Time Analysis', style={'backgroundColor' : colors_useful['symmetry'], 'color' : colors_useful['text_color']}), href='/realtime_analysis-page', className='six columns', style={'textAlign' : 'right'})
-	], className='container'),
+		dcc.Link(html.Button('Home', style={'backgroundColor' : colors_useful['rev_symmetry'], 'color' : colors_useful['text_color']}), href='/', className='six columns', style={'textAlign' : 'center'}),
+		dcc.Link(html.Button('Real Time Analysis', style={'backgroundColor' : colors_useful['rev_symmetry'], 'color' : colors_useful['text_color']}), href='/realtime_analysis-page', className='six columns', style={'textAlign' : 'center'})
+	], className='row', style={'backgroundColor' : colors_useful['symmetry'], 'padding' : '20px 20px', 'margin-right' : 30, 'margin-left' : 30}),
 
 	html.Div([
 		html.Div([
