@@ -8,7 +8,7 @@ import dash_html_components as  html
 import plotly.graph_objs as go
 from dash.dependencies import (Input, Output, Event)
 
-from design_layout import (index_page, realtime_analysis_layout, earth_history_layout, colors_useful)
+from design_layout import (index_page, realtime_tracking_layout, earth_history_layout, colors_useful)
 from realtime_details import (grab_appropriate_data, extract_places_regions, radius_multiplier, center_location)
 from report_alerts import (seismic_reporting_data, get_all_felts, get_all_tsunamis, get_all_alerts, make_seismic_report, make_alert_report)
 
@@ -30,7 +30,7 @@ app.layout = html.Div([
 
 earth_quake_df = pd.read_csv('eq_database_place.csv') # for earthquake_history
 
-################################# realtime analysis callbacks ############################
+################################# realtime tracking callbacks ############################
 ######## update the state regions options ########
 @app.callback(
 	Output('region-options', 'options'),
@@ -43,6 +43,25 @@ def grab_region_options(occurence_type, mag_value):
 	_, regions, _ = extract_places_regions(places)
 	regions.insert(0, 'World Wide')
 	return [{'label' : s, 'value' : s} for s in regions]
+##################################################
+
+########### set magnitude optiond ################
+# @app.callback(
+# 	Output('magnitude-drop', 'value'), 
+# 	[Input('occurence_type', 'options'), Input('magnitude-drop', 'options')],
+# 	events=[Event('live-update', 'interval')]
+# )
+# def set_magnitude_value(occurence_type, mag_value):
+# 	if occurence_type == 'all_hour':
+# 		return mag_value[0]['value']
+# 	if occurence_type == 'all_day':
+# 		return mag_value[2]['value']
+# 	elif occurence_type == 'all_week':
+# 		return mag_value[3]['value']
+# 	elif occurence_type == 'all_month':
+# 		return mag_value[4]['value']
+# 	else:
+# 		return mag_value
 ##################################################
 
 ############# plot earthquakes ###################
@@ -131,6 +150,7 @@ def plot_earthquakes(occurence_type, mag_value, region_options):
 		layout = go.Layout(
 			height=700, autosize=True, showlegend=False,
 		  hovermode='closest',
+		  margin=dict(l=30, r=10, t=40, b=40),
 		  geo=dict(
 		  	projection=dict(type="equirectangular"),
 		  ),
@@ -374,7 +394,7 @@ def pie_region_diagram(occurence_type, mag_value):
 			html.H4('Network issues, try refreshing the page...')
 		], style={'textAlign' : 'center', 'margin-top' : 150})
 ##################################################
-################################# realtime analysis callbacks ############################
+################################# realtime tracking callbacks ############################
 
 ################################# earthquake history ############################
 @app.callback(
@@ -428,8 +448,8 @@ def show_ancient_cw(country_name):
 
 @app.callback(Output('page-content', 'children'), [Input('url', 'pathname')])
 def display_page(pathname):
-	if pathname == '/realtime_analysis-page':
-		return realtime_analysis_layout
+	if pathname == '/realtime_tracking-page':
+		return realtime_tracking_layout
 	if pathname == '/earthquake_history-page':
 		return earth_history_layout
 	else:

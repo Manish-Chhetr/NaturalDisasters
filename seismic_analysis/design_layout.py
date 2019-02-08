@@ -20,8 +20,11 @@ colors_useful = {
 	'tsunami_color' : '#0240da'
 }
 
-logo_image = 'cartoon-globe.png'
-en_logo = b64.b64encode(open(logo_image, 'rb').read())
+globe_image = 'cartoon-globe.png'
+en_globe = b64.b64encode(open(globe_image, 'rb').read())
+
+main_logo = 'Quake_Logo.png'
+en_main_logo = b64.b64encode(open(main_logo, 'rb').read())
 
 ################################ layout page #####################################
 ##################### home page ##################
@@ -67,9 +70,9 @@ index_page = html.Div([
 		]),
 
 		html.Div([
-			html.H2('To explore the Seismic Analysis', className='eight columns', 
+			html.H2('To explore the Real time tracking', className='eight columns', 
 				style={'textAlign' : 'right'}),
-			dcc.Link(html.Button('Explore here', style={'backgroundColor' : colors_useful['symmetry'], 'color' : colors_useful['text_color']}), href='/realtime_analysis-page', className='four columns', style={'margin-top' : 22, 'textAlign' : 'left'})
+			dcc.Link(html.Button('Explore here', style={'backgroundColor' : colors_useful['symmetry'], 'color' : colors_useful['text_color']}), href='/realtime_tracking-page', className='four columns', style={'margin-top' : 22, 'textAlign' : 'left'})
 		], className='row', style={'margin-top' : 40}),
 	], className='container', style={'backgroundColor' : colors_useful['rev_symmetry'], 'padding' : '30px 30px', 'boxShadow' : '8px 8px #aed6f1', 'border' : 'thin #e5e8e8 solid', 'fontFamily' : 'Dosis, sans-serif'})
 
@@ -77,24 +80,18 @@ index_page = html.Div([
 )
 ##################################################
 
-##################### real time analysis ##################
-realtime_analysis_layout = html.Div([
+##################### real time Tracking ##################
+realtime_tracking_layout = html.Div([
 
 	html.Div([
-		dcc.Link(html.Button('Home', style={'backgroundColor' : '#fff', 'color' : colors_useful['text_color']}), href='/', className='six columns', style={'textAlign' : 'center'}),
-		dcc.Link(html.Button('Earthquake History', style={'backgroundColor' : '#fff', 'color' : colors_useful['text_color']}), href='/earthquake_history-page', className='six columns', style={'textAlign' : 'center'})
-	], className='row', style={'backgroundColor' : colors_useful['symmetry'], 'padding' : '20px 20px', 'margin-right' : 30, 'margin-left' : 30}),
-
-	# html.Div([
-	# 	html.Nav([
-	# 		html.A(html.Button('Home', style={'backgroundColor' : colors_useful['rev_symmetry']}), href='/', className='nav-item nav-link btn'),
-	# 		html.A(html.Button('Earthquake History', style={'backgroundColor' : colors_useful['rev_symmetry']}), href='/earthquake_history-page', className='nav-item nav-link active btn')
-	# 	], className='nav nav-pills', style={'backgroundColor' : colors_useful['symmetry']})
-	# ]),
+		dcc.Link(html.Button('Back to Home', style={'backgroundColor' : colors_useful['rev_symmetry'], 'color' : colors_useful['text_color'], 'margin-top' : 25}), href='/', className='five columns', style={'textAlign' : 'center'}),
+		html.Img(src='data:image/png;base64,{}'.format(en_main_logo.decode(), id='main-logo'), className='two columns', style={'width' : 90, 'height' : 90, 'textAlign' : 'center'}),
+		dcc.Link(html.Button('Earthquake History', style={'backgroundColor' : colors_useful['rev_symmetry'], 'color' : colors_useful['text_color'], 'margin-top' : 25}), href='/earthquake_history-page', className='five columns', style={'textAlign' : 'center'})
+	], className='row', style={'backgroundColor' : colors_useful['symmetry'], 'padding' : '6px 6px', 'margin-right' : 30, 'margin-left' : 30, 'textAlign' : 'center'}),
 
 	dcc.Interval(id='live-update', interval='300000'), # update every 5 min
 
-	html.Div([html.H3('Seismic Data Visualization', style={'textAlign' : 'center', 'margin-top' : 30, 'margin-bottom' : 30}),
+	html.Div([html.H3('Earthquake Tracking System', style={'textAlign' : 'center', 'margin-top' : 30, 'margin-bottom' : 30}),
 		html.Div([
 			html.Div([html.H5('Occurence')], className='three columns', style={'textAlign' : 'right'}),
 			html.Div([
@@ -109,7 +106,7 @@ realtime_analysis_layout = html.Div([
 					value='all_day',
 				)
 			], className='three columns', style={'textAlign' : 'left'}),
-			html.Div([html.H5('Mag above')], className='two columns', style={'textAlign' : 'right'}),
+			html.Div([html.H5('Magnitude (+)')], className='two columns', style={'textAlign' : 'right'}),
 			html.Div([
 				dcc.Dropdown(
 					id='magnitude-drop',
@@ -132,7 +129,7 @@ realtime_analysis_layout = html.Div([
 			'color' : colors_useful['text_color']
 	}),
 
-	html.Div(id='highest-mag', style={'color' : colors_useful['danger'], 'margin-top' : 50}),
+	html.Div(id='highest-mag', style={'color' : colors_useful['danger'], 'margin-top' : 40}),
 
 	html.Div([
 		html.Div(id='map-output', className='nine columns', style={'margin-top' : 5}),
@@ -147,18 +144,18 @@ realtime_analysis_layout = html.Div([
 				html.H6('Alert Color', style={'backgroundColor' : colors_useful['symmetry'], 'textAlign' : 'center'}),
 				html.Div([
 					html.Div(id='alert-reports')
-				], style={'overflowY' : 'scroll', 'height' : 120})
+				], style={'overflowY' : 'scroll', 'height' : 150})
 			]),
 			html.Div([
 				html.H6('Triggered Tsunami', style={'backgroundColor' : colors_useful['symmetry'], 'textAlign' : 'center'}),
 				html.Div([
 					html.Div(id='tsunami-reports')
-				], style={'overflowY' : 'scroll', 'height' : 120})
+				], style={'overflowY' : 'scroll', 'height' : 130})
 			]),
-		], className='three columns', style={'margin-top' : 80, 'margin-left' : 20})
-	], className='row', style={'color' : colors_useful['text_color']}),
+		], className='three columns', style={'margin-top' : 40, 'margin-left' : 20})
+	], className='row', style={'color' : colors_useful['text_color'], 'margin-top' : -30}),
 
-	html.Hr(),
+	# html.Hr(),
 
 	html.Div([
 		html.Div([
@@ -201,13 +198,14 @@ realtime_analysis_layout = html.Div([
 earth_history_layout = html.Div([
 
 	html.Div([
-		dcc.Link(html.Button('Home', style={'backgroundColor' : colors_useful['rev_symmetry'], 'color' : colors_useful['text_color']}), href='/', className='six columns', style={'textAlign' : 'center'}),
-		dcc.Link(html.Button('Real Time Analysis', style={'backgroundColor' : colors_useful['rev_symmetry'], 'color' : colors_useful['text_color']}), href='/realtime_analysis-page', className='six columns', style={'textAlign' : 'center'})
-	], className='row', style={'backgroundColor' : colors_useful['symmetry'], 'padding' : '20px 20px', 'margin-right' : 30, 'margin-left' : 30}),
+		dcc.Link(html.Button('Back to Home', style={'backgroundColor' : colors_useful['rev_symmetry'], 'color' : colors_useful['text_color'], 'margin-top' : 25}), href='/', className='five columns', style={'textAlign' : 'center'}),
+		html.Img(src='data:image/png;base64,{}'.format(en_main_logo.decode(), id='main-logo'), className='two columns', style={'width' : 90, 'height' : 90, 'textAlign' : 'center'}),
+		dcc.Link(html.Button('Real Time Tracking', style={'backgroundColor' : colors_useful['rev_symmetry'], 'color' : colors_useful['text_color'], 'margin-top' : 25}), href='/realtime_tracking-page', className='five columns', style={'textAlign' : 'center'})
+	], className='row', style={'backgroundColor' : colors_useful['symmetry'], 'padding' : '6px 6px', 'margin-right' : 30, 'margin-left' : 30, 'textAlign' : 'center'}),
 
 	html.Div([
 		html.Div([
-			html.Img(src='data:image/png;base64,{}'.format(en_logo.decode()), id='logo',
+			html.Img(src='data:image/png;base64,{}'.format(en_globe.decode()),
 				style={'width' : 70, 'height' : 70})
 		], className='three columns', style={'textAlign' : 'right'}),
 		html.Div([
