@@ -234,21 +234,51 @@ def display_tsunami_reports(occurence_type, mag_value, region_options):
 ############# display the highest mag ############
 @app.callback(
 	Output('highest-mag', 'children'),
-	[Input('occurence_type', 'value'), Input('magnitude-drop', 'value')],
+	[Input('occurence_type', 'value'), Input('magnitude-drop', 'value'),
+		Input('region-options', 'value')],
 	events=[Event('live-update', 'interval')]
 )
-def display_highest_mag(occurence_type, mag_value):
+def display_highest_mag(occurence_type, mag_value, region_options):
 	eq = grab_appropriate_data(occurence_type, mag_value)
-	hm_mags = eq['mag'].tolist()
-	high_mag = max(hm_mags)
-	places = eq['place'].tolist()
+	threshold_mag = 5.0
+	try:
+		if region_options == 'World Wide':
+			world_df = eq
+			world_hm_mags = world_df['mag'].tolist()
+			world_max_mag = max(world_hm_mags)
+			world_places = world_df['place'].tolist()
 
-	for p in range(len(places)):
-		if hm_mags[p] == high_mag:
-			hm_place = places[p]
+			for wp in range(len(world_places)):
+				if world_hm_mags[wp] == world_max_mag:
+					world_hm_place = world_places[wp]
 
-	return html.Div([html.H1('M ' + str(high_mag) + ' -- ' + str((hm_place)))
-	], style={'textAlign' : 'center'})
+			if world_max_mag >= threshold_mag:
+				wc_display = colors_useful['danger']
+			else:
+				wc_display = colors_useful['text_color']
+
+			return html.Div([html.H1('M ' + str(world_max_mag) + ' -- ' + str((world_hm_place)))
+			], style={'textAlign' : 'center', 'color' : wc_display})
+
+		else:
+			region_df = eq[eq['place'].str.contains(str(region_options))]
+			region_hm_mags = region_df['mag'].tolist()
+			region_max_mag = max(region_hm_mags)
+			region_places = region_df['place'].tolist()
+
+			for rp in range(len(region_places)):
+				if region_hm_mags[rp] == region_max_mag:
+					region_hm_place = region_places[rp]
+
+			if region_max_mag >= threshold_mag:
+				rc_display = colors_useful['danger']
+			else:
+				rc_display = colors_useful['text_color']
+
+			return html.Div([html.H1('M ' + str(region_max_mag) + ' -- ' + str((region_hm_place)))
+			], style={'textAlign' : 'center', 'color' : rc_display})
+	except ValueError as e:
+		return ''
 ##################################################
 
 ############# bar chart - update #################
@@ -429,6 +459,7 @@ def show_ancient_cw(country_name):
 	layout = go.Layout(
 		height=700, autosize=True, showlegend=False,
 	  hovermode='closest',
+	  margin=dict(l=30, r=30, t=40, b=40),
 	  geo=dict(
 	  	projection=dict(type="equirectangular"),
 	  ),
