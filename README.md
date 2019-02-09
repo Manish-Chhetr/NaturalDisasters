@@ -16,12 +16,11 @@ It works based on the user's input and has very simple user interface. The worki
 
 https://user-images.githubusercontent.com/25919294/52524234-e80cb280-2cc0-11e9-9ff0-b02b3097f40b.gif
       
-
 # Earthquake History:
 This part of the project deals with the history of earthquakes occured between the years 1965-2016. Country-wise plots can be obtained.
 The working can be seen below.
 
-Adding video soon
+https://user-images.githubusercontent.com/25919294/52524301-86007d00-2cc1-11e9-842a-eef38edb3e10.gif
 
 # Conclusion:
 The aim for our project is to predict future earthquakes and alert people about the occurence and prevent any kind off damage.
