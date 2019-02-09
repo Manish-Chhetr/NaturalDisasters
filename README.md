@@ -5,7 +5,9 @@ Our project mainly shows the real time plots and also the past occuence of earth
 # Requirements:
 - Python (3.0 and above)
 - Python Libraries:
-  - dash and components
+  - dash
+  - dash-core-components
+  - dash-html-components
   - plotly
   - pandas
   - geopandas
