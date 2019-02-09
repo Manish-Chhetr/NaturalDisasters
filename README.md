@@ -14,7 +14,7 @@ Our project mainly shows the real time plots and also the past occuence of earth
 This part of the project gives a track of all the earthquakes happened in the past hour, in the past 24 hours and last week. The points are plotted on a map. Based on the magnitude of the earthquake the colour changes.
 It works based on the user's input and has very simple user interface. The working can be seen below.
 
-NaturalDisasters/RealTimeAnalysis.webm
+https://user-images.githubusercontent.com/25919294/52524234-e80cb280-2cc0-11e9-9ff0-b02b3097f40b.gif
       
 
 # Earthquake History:
