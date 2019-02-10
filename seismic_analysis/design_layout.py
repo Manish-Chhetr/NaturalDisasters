@@ -99,9 +99,8 @@ realtime_tracking_layout = html.Div([
 					id='occurence_type',
 					options=[
 						{'label' : 'This Hour', 'value' : 'all_hour'},
-						{'label' : 'Today', 'value' : 'all_day'},
+						{'label' : 'Yesterday', 'value' : 'all_day'},
 						{'label' : 'Last Week', 'value' : 'all_week'},
-						{'label' : 'Last Month', 'value' : 'all_month'}
 					],
 					value='all_day',
 				)
@@ -111,7 +110,7 @@ realtime_tracking_layout = html.Div([
 				dcc.Dropdown(
 					id='magnitude-drop',
 					options=[{'label' : s, 'value' : s} for s in measuring_mags],
-					value=3
+					value=4
 				)
 			], className='two columns', style={'textAlign' : 'center'})
 		], className='row', style={'textAlign' : 'center'}),
