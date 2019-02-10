@@ -172,8 +172,8 @@ def plot_earthquakes(occurence_type, mag_value, region_options):
 
 	except Exception as e:
 		return html.Div([
-			html.H4('Could not load the map for some reasons'),
-			html.H2('Please select the input...'),
+			html.H4('Could not load the map for the input selected.'),
+			html.H3('Please select valid Magnitude / Region ...'),
 			# html.P(str(e))
 		], style={'margin-top' : 200, 'margin-bottom' : 200, 'textAlign' : 'center'})
 ##################################################
@@ -257,8 +257,8 @@ def display_highest_mag(occurence_type, mag_value, region_options):
 			else:
 				wc_display = colors_useful['text_color']
 
-			return html.Div([html.H1('M ' + str(world_max_mag) + ' -- ' + str((world_hm_place)))
-			], style={'textAlign' : 'center', 'color' : wc_display})
+			return html.Div([html.H2('M ' + str(world_max_mag) + ' -- ' + str((world_hm_place)))
+			], style={'textAlign' : 'center', 'color' : wc_display, 'margin-left' : 30, 'margin-right' : 30})
 
 		else:
 			region_df = eq[eq['place'].str.contains(str(region_options))]
@@ -275,8 +275,8 @@ def display_highest_mag(occurence_type, mag_value, region_options):
 			else:
 				rc_display = colors_useful['text_color']
 
-			return html.Div([html.H1('M ' + str(region_max_mag) + ' -- ' + str((region_hm_place)))
-			], style={'textAlign' : 'center', 'color' : rc_display})
+			return html.Div([html.H2('M ' + str(region_max_mag) + ' -- ' + str((region_hm_place)))
+			], style={'textAlign' : 'center', 'color' : rc_display, 'margin-left' : 30, 'margin-right' : 30})
 	except ValueError as e:
 		return ''
 ##################################################
@@ -303,86 +303,79 @@ def bar_chart_colouring(mags):
 )
 def mag_bar_diagram(occurence_type, mag_value, region_options):
 	try:
-		if occurence_type == 'all_hour' or occurence_type == 'all_day':
-			eq = grab_appropriate_data(occurence_type, mag_value)
-			places = eq['place'].tolist()
-			mags = eq['mag'].tolist()
-			depths = eq['depth'].tolist()
+		eq = grab_appropriate_data(occurence_type, mag_value)
+		places = eq['place'].tolist()
+		mags = eq['mag'].tolist()
+		depths = eq['depth'].tolist()
 
-			_, eplaces, _ = extract_places_regions(places)
+		_, eplaces, _ = extract_places_regions(places)
 
-			seperate = []
-			for p in range(len(places)):
-				seperate.append([places[p].split(', '), mags[p], depths[p]])
+		seperate = []
+		for p in range(len(places)):
+			seperate.append([places[p].split(', '), mags[p], depths[p]])
 
-			state_regions = {}
-			for p in eplaces:
-				regions = []	
-				for sep in seperate:
-					locr = sep[0]
-					if len(locr) == 2:
-						if locr[1] == p:
-							regions.append([locr[0], sep[1], sep[2]])
-					if len(locr) != 2:
-						if locr[0] == p:
-							regions.append([locr[0], sep[1], sep[2]])
-				state_regions[p] = regions
-			state_regions['World Wide'] = []
+		state_regions = {}
+		for p in eplaces:
+			regions = []	
+			for sep in seperate:
+				locr = sep[0]
+				if len(locr) == 2:
+					if locr[1] == p:
+						regions.append([locr[0], sep[1], sep[2]])
+				if len(locr) != 2:
+					if locr[0] == p:
+						regions.append([locr[0], sep[1], sep[2]])
+			state_regions[p] = regions
+		state_regions['World Wide'] = []
 
-			region_places = list(state_regions.keys())
-			region_places.remove('World Wide')
+		region_places = list(state_regions.keys())
+		region_places.remove('World Wide')
 
-			traces = []; bar_region = []
-			bar_mag = []; bar_depth = []
-			if region_options in region_places:
-				for k, v in state_regions.items():
-					if k == region_options:
-						details = v
-						for about in details:
-							bar_region.append(about[0])
-							bar_mag.append(about[1])
-							bar_depth.append(about[2])
-				traces.append(
-					go.Histogram2dContour(
-						x=bar_mag, y=bar_depth,
-						name='Region Magnitude',
-						colorscale='Viridis'
-					)
-				)
-				layout = go.Layout(
-					height=600,
-					title=str(region_options)
-				)
-				bar_state_region = html.Div([
-					dcc.Graph(id='state-region-bar', figure={'data' : traces, 'layout' : layout})
-				])
-				return bar_state_region
-
-			elif region_options == 'World Wide':
-				for k, v in state_regions.items():
+		traces = []; bar_region = []
+		bar_mag = []; bar_depth = []
+		if region_options in region_places:
+			for k, v in state_regions.items():
+				if k == region_options:
 					details = v
 					for about in details:
 						bar_region.append(about[0])
 						bar_mag.append(about[1])
-				bar_highlight = bar_chart_colouring(bar_mag)
-				traces.append(
-					go.Bar(
-						x=bar_region, y=bar_mag,
-						name='Region Magnitude',
-						marker=dict(color=bar_highlight)
-					)
+						bar_depth.append(about[2])
+			traces.append(
+				go.Histogram2dContour(
+					x=bar_mag, y=bar_depth,
+					name='Region Magnitude',
+					colorscale='Viridis'
 				)
-				layout = go.Layout(title=str(region_options))
-				bar_worldwide = html.Div([
-					dcc.Graph(id='bar-worldwide', figure={'data' : traces, 'layout' : layout})
-				])
-				return bar_worldwide
+			)
+			layout = go.Layout(
+				height=600,
+				title=str(region_options)
+			)
+			bar_state_region = html.Div([
+				dcc.Graph(id='state-region-bar', figure={'data' : traces, 'layout' : layout})
+			])
+			return bar_state_region
 
-		else:
-			issue = html.Div([
-				html.H4('Sorry, could not display the chart for the ' + str(occurence_type) + '...')
-			], style={'textAlign' : 'center', 'margin-top' : 150})
-			return issue
+		elif region_options == 'World Wide':
+			for k, v in state_regions.items():
+				details = v
+				for about in details:
+					bar_region.append(about[0])
+					bar_mag.append(about[1])
+			bar_highlight = bar_chart_colouring(bar_mag)
+			traces.append(
+				go.Bar(
+					x=bar_region, y=bar_mag,
+					name='Region Magnitude',
+					marker=dict(color=bar_highlight)
+				)
+			)
+			layout = go.Layout(title=str(region_options))
+			bar_worldwide = html.Div([
+				dcc.Graph(id='bar-worldwide', figure={'data' : traces, 'layout' : layout})
+			])
+			return bar_worldwide
 
 	except Exception as e:
 		return html.Div([
@@ -399,25 +392,18 @@ def mag_bar_diagram(occurence_type, mag_value, region_options):
 )
 def pie_region_diagram(occurence_type, mag_value):
 	try:
-		if occurence_type == 'all_hour' or occurence_type == 'all_day':
-			eq = grab_appropriate_data(occurence_type, mag_value)
-			places = eq['place'].tolist()
-			_, regions, region_counts = extract_places_regions(places)
-			traces = []
-			traces.append(
-				go.Pie(labels=regions, values=region_counts, pull=.05)
-			)
-			layout = go.Layout(title='World Wide')
-			pie_chart = html.Div([
-				dcc.Graph(id='pie-graph',	figure={'data' : traces, 'layout' : layout})
-			])
-			return pie_chart
-
-		else:
-			issue = html.Div([
-				html.H4('Sorry, could not display the chart for the ' + str(occurence_type) + '...')
-			], style={'textAlign' : 'center', 'margin-top' : 150})
-			return issue
+		eq = grab_appropriate_data(occurence_type, mag_value)
+		places = eq['place'].tolist()
+		_, regions, region_counts = extract_places_regions(places)
+		traces = []
+		traces.append(
+			go.Pie(labels=regions, values=region_counts, pull=.05)
+		)
+		layout = go.Layout(title='World Wide')
+		pie_chart = html.Div([
+			dcc.Graph(id='pie-graph',	figure={'data' : traces, 'layout' : layout})
+		])
+		return pie_chart
 
 	except Exception as e:
 		return html.Div([
