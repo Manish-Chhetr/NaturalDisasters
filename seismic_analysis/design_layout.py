@@ -87,11 +87,11 @@ realtime_tracking_layout = html.Div([
 		dcc.Link(html.Button('Back to Home', style={'backgroundColor' : colors_useful['rev_symmetry'], 'color' : colors_useful['text_color'], 'margin-top' : 25}), href='/', className='five columns', style={'textAlign' : 'center'}),
 		html.Img(src='data:image/png;base64,{}'.format(en_main_logo.decode(), id='main-logo'), className='two columns', style={'width' : 90, 'height' : 90, 'textAlign' : 'center'}),
 		dcc.Link(html.Button('Earthquake History', style={'backgroundColor' : colors_useful['rev_symmetry'], 'color' : colors_useful['text_color'], 'margin-top' : 25}), href='/earthquake_history-page', className='five columns', style={'textAlign' : 'center'})
-	], className='row', style={'backgroundColor' : colors_useful['symmetry'], 'padding' : '6px 6px', 'margin-right' : 30, 'margin-left' : 30, 'textAlign' : 'center'}),
+	], className='row', style={'backgroundColor' : colors_useful['symmetry'], 'padding' : '5px 5px', 'margin-right' : 30, 'margin-left' : 30, 'textAlign' : 'center'}),
 
 	dcc.Interval(id='live-update', interval='300000'), # update every 5 min
 
-	html.Div([html.H3('Earthquake Tracking System', style={'textAlign' : 'center', 'margin-top' : 30, 'margin-bottom' : 30}),
+	html.Div([html.H3('Earthquake Tracking System', style={'textAlign' : 'center', 'margin-top' : 20, 'margin-bottom' : 20}),
 		html.Div([
 			html.Div([html.H5('Occurence')], className='three columns', style={'textAlign' : 'right'}),
 			html.Div([
@@ -99,9 +99,8 @@ realtime_tracking_layout = html.Div([
 					id='occurence_type',
 					options=[
 						{'label' : 'This Hour', 'value' : 'all_hour'},
-						{'label' : 'Today', 'value' : 'all_day'},
+						{'label' : 'Yesterday', 'value' : 'all_day'},
 						{'label' : 'Last Week', 'value' : 'all_week'},
-						{'label' : 'Last Month', 'value' : 'all_month'}
 					],
 					value='all_day',
 				)
@@ -111,7 +110,7 @@ realtime_tracking_layout = html.Div([
 				dcc.Dropdown(
 					id='magnitude-drop',
 					options=[{'label' : s, 'value' : s} for s in measuring_mags],
-					value=3
+					value=4
 				)
 			], className='two columns', style={'textAlign' : 'center'})
 		], className='row', style={'textAlign' : 'center'}),
@@ -121,15 +120,15 @@ realtime_tracking_layout = html.Div([
 			html.Div([
 				dcc.Dropdown(id='region-options')
 			], className='three columns', style={'textAlign' : 'left'})
-		], className='row', style={'margin-top' : 30}),
+		], className='row', style={'margin-top' : 20}),
 	], style={'borderBottom' : 'thin lightgrey solid', 
 			'backgroundColor' : colors_useful['symmetry'], 
-			'padding': '10px 10px', 'margin-left' : 30, 
-			'margin-right' : 30, 'margin-top' : 40,
+			'padding': '5px 5px', 'margin-left' : 30, 
+			'margin-right' : 30, 'margin-top' : 10,
 			'color' : colors_useful['text_color']
 	}),
 
-	html.Div(id='highest-mag', style={'color' : colors_useful['danger'], 'margin-top' : 40}),
+	html.Div(id='highest-mag', style={'margin-top' : 30}),
 
 	html.Div([
 		html.Div(id='map-output', className='nine columns', style={'margin-top' : 5}),
@@ -160,8 +159,7 @@ realtime_tracking_layout = html.Div([
 	html.Div([
 		html.Div([
 			html.Div([
-				html.H6('Total Earthquakes across the states',
-						style={'textAlign' : 'center'}),
+				html.H6('Total Earthquakes across the World',	style={'textAlign' : 'center'}),
 				html.Div(id='region-pie')
 			], className='eight columns'),
 			html.Div([
@@ -169,9 +167,9 @@ realtime_tracking_layout = html.Div([
 					html.Div([
 						html.P("NEIC (National Earthquake Information Center) reports that 12000 - 14000 earthquakes happen each year. Smaller earthquakes of magnitude 2 occur several hundred times a day world wide and Major earthquakes of magnitude greater than 7 happen more than a once per month."),
 						html.P("The largest recorded earthquake was Great Chilean Earthquake of May 22, 1960 which had a magnitude of 9.5. The great earthquake in  2004 in Sumatra, Indonesia measuring magnitude 9.1 produced Tsunamis that caused widespread disaster in 14 countries. In 2011, earthquake of japan having magnitude 9.0 also caused Tsunamis.")
-					], style={'margin-right' : 25, 'margin-top' : 40})
+					], style={'margin-right' : 25, 'margin-top' : 20})
 			], className='four columns'),
-		], className='row', style={'margin-top' : 40}),
+		], className='row', style={'margin-top' : 20}),
 		
 		# html.Hr(),
 
@@ -181,13 +179,13 @@ realtime_tracking_layout = html.Div([
 				html.Div([
 					html.P("Magnitude is the best available estimate of earthquake's size. It is the measure of the size of an earthquake at its source. At the same distance from the earthquake, the amplitude of the seismic waves from which the magnitude is determined are approximately 10 times as large during a magnitude 5 earthquake as during a magnitude 4 earthquake."),
 					html.P("Earthquakes are commonly complex events that release energy over a wide range of frequencies and at varying amounts as faulting or rupture process occurs. The various types of magnitude measure different aspects of the seismic radiation.")
-				], style={'margin-left' : 30, 'textAlign' : 'left', 'margin-top' : 40})
-			], className='four columns', style={'margin-top' : 30}),
+				], style={'margin-left' : 30, 'textAlign' : 'left', 'margin-top' : 20})
+			], className='four columns', style={'margin-top' : 20}),
 			html.Div([
 				html.H6('Magnitudes of Earthquakes', style={'textAlign' : 'center'}),
 				html.Div(id='mag-bar')
-			], className='eight columns')
-		], className='row', style={'margin-top' : 30}),
+			], className='eight columns', style={'margin-top' : 20})
+		], className='row', style={'margin-top' : 20}),
 	
 	], style={'color' : colors_useful['text_color']})
 
@@ -201,7 +199,7 @@ earth_history_layout = html.Div([
 		dcc.Link(html.Button('Back to Home', style={'backgroundColor' : colors_useful['rev_symmetry'], 'color' : colors_useful['text_color'], 'margin-top' : 25}), href='/', className='five columns', style={'textAlign' : 'center'}),
 		html.Img(src='data:image/png;base64,{}'.format(en_main_logo.decode(), id='main-logo'), className='two columns', style={'width' : 90, 'height' : 90, 'textAlign' : 'center'}),
 		dcc.Link(html.Button('Real Time Tracking', style={'backgroundColor' : colors_useful['rev_symmetry'], 'color' : colors_useful['text_color'], 'margin-top' : 25}), href='/realtime_tracking-page', className='five columns', style={'textAlign' : 'center'})
-	], className='row', style={'backgroundColor' : colors_useful['symmetry'], 'padding' : '6px 6px', 'margin-right' : 30, 'margin-left' : 30, 'textAlign' : 'center'}),
+	], className='row', style={'backgroundColor' : colors_useful['symmetry'], 'padding' : '5px 5px', 'margin-right' : 30, 'margin-left' : 30, 'textAlign' : 'center'}),
 
 	html.Div([
 		html.Div([
@@ -221,8 +219,8 @@ earth_history_layout = html.Div([
 		], className='six columns', style={'width' : 400, 'textAlign' : 'left', 'margin-top' : 15}),
 	], className='row', style={'borderBottom' : 'thin lightgrey solid', 
 		'backgroundColor' : colors_useful['symmetry'], 
-		'padding': '40px 40px', 'margin-left' : 30, 
-		'margin-right' : 30, 'margin-top' : 40, 'textAlign' : 'center',
+		'padding': '10px 10px', 'margin-left' : 30, 
+		'margin-right' : 30, 'margin-top' : 10, 'textAlign' : 'center',
 		'color' : colors_useful['text_color']
 	}),
 	html.Div(id='history-map')
