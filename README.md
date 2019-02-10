@@ -1,5 +1,7 @@
 # Earthquake Tracking System:
 
+![quake_logo](https://user-images.githubusercontent.com/26375997/52528845-d0a7e680-2d0d-11e9-8a81-d49e949354c7.png)
+
 Our project mainly shows the real time plots and also the past occuence of earthquakes based on the user input. The database which we are using is from the offcial USGS wesite.
 
 # Requirements:
