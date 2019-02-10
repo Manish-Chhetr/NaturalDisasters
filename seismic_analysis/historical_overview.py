@@ -72,12 +72,3 @@ eq_data_df = pd.read_csv('eq_database_place.csv')
 select_countries = get_country_name(eq_data_df)
 
 #################################################################################
-
-import numpy as np
-import math
-
-japan = eq_data_df[eq_data_df['Place'].str.contains('JP')]
-jp_seismic = japan[['Date', 'Time', 'Latitude', 'Longitude', 'Place', 'Depth', 'Magnitude', 'Magnitude Type', 'Type']]
-
-print(jp_seismic.head())
-print(len(jp_seismic))
