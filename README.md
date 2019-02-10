@@ -5,6 +5,7 @@
 Our project mainly shows the real time plots and also the past occuence of earthquakes based on the user input. The database which we are using is from the offcial USGS wesite.
 
 # Requirements:
+```
 - Python (3.0 and above)
 - Python Libraries:
   - dash
@@ -13,7 +14,7 @@ Our project mainly shows the real time plots and also the past occuence of earth
   - plotly
   - pandas
   - geopandas
-
+```
 # Real Time Tracking:
 This part of the project gives a track of all the earthquakes happened in the past hour, in the past 24 hours and last week. The points are plotted on a map. Based on the magnitude of the earthquake the colour changes.
 It works based on the user's input and has very simple user interface. The working can be seen below.
