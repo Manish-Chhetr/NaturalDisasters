@@ -26,5 +26,5 @@ The working can be seen below.
 
 ![earthqauke_history](https://user-images.githubusercontent.com/26375997/52524977-fced4400-2cc8-11e9-8496-8c01428fa0de.gif)
 
-# Conclusion:
+# Milestone:
 The aim for our project is to predict future earthquakes and alert people about the occurence and prevent any kind off damage.
