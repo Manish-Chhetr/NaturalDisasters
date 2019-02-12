@@ -31,12 +31,15 @@ en_main_logo = b64.b64encode(open(main_logo, 'rb').read())
 index_page = html.Div([
 	html.Div([
 		html.Div([
-			html.H2('Earthquakes - Seismic Analysis', 
-				style={'textAlign' : 'left', 'textDecoration' : 'underline'}),
 			html.Div([
-				html.H5('Earthquake is a sudden shaking surface of the earth creating seismic waves. They are measured in terms of magnitude that signifies the occurrence type, basically varies from those that are so weak that they cannot be felt to those that are tremendous enough to create a widespread havoc.'),
-			]),
-		]),
+				html.H2('Earthquake Tracking System', 
+					style={'textAlign' : 'left', 'textDecoration' : 'underline', 'margin-top' : 50}),
+				html.H5('Earthquake is a sudden shaking surface of the earth creating seismic waves. They are measured in terms of magnitude that signifies the occurrence type, basically varies from those that are so weak that they cannot be felt to those that are tremendous enough to create a widespread havoc.', style={'margin-right' : 20}),
+			], className='eight columns'),
+			html.Div([
+				html.Img(src='data:image/png;base64,{}'.format(en_main_logo.decode()), style={'width' : 270, 'height' : 270})
+			], style={'textAlign' : 'left', 'margin-top' : 50}, className='four columns')
+		], className='row', style={'margin-top' : -30}),
 		html.Div([
 			html.Div([
 				html.Div([html.H2('National Earthquake Information Center', style={'textDecoration' : 'underline'})]),
@@ -76,7 +79,7 @@ index_page = html.Div([
 		], className='row', style={'margin-top' : 40}),
 	], className='container', style={'backgroundColor' : colors_useful['rev_symmetry'], 'padding' : '30px 30px', 'boxShadow' : '8px 8px #aed6f1', 'border' : 'thin #e5e8e8 solid', 'fontFamily' : 'Dosis, sans-serif'})
 
-], style={'backgroundColor' : colors_useful['symmetry'], 'padding' : '60px 60px', 'color' : colors_useful['text_color']}
+], style={'backgroundColor' : colors_useful['symmetry'], 'padding' : '40px 40px', 'color' : colors_useful['text_color']}
 )
 ##################################################
 
@@ -128,7 +131,7 @@ realtime_tracking_layout = html.Div([
 			'color' : colors_useful['text_color']
 	}),
 
-	html.Div(id='highest-mag', style={'margin-top' : 30}),
+	html.Div(id='highest-mag', style={'margin-top' : 20}),
 
 	html.Div([
 		html.Div(id='map-output', className='nine columns', style={'margin-top' : 5}),
@@ -152,7 +155,7 @@ realtime_tracking_layout = html.Div([
 				], style={'overflowY' : 'scroll', 'height' : 130})
 			]),
 		], className='three columns', style={'margin-top' : 40, 'margin-left' : 20})
-	], className='row', style={'color' : colors_useful['text_color'], 'margin-top' : -30}),
+	], className='row', style={'color' : colors_useful['text_color'], 'margin-top' : -20}),
 
 	# html.Hr(),
 
