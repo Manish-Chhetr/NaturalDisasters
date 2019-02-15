@@ -1,6 +1,7 @@
 import time
 import pandas as pd
 import datetime as dt
+import numpy as np
 
 import dash
 import dash_core_components as dcc
@@ -43,25 +44,6 @@ def grab_region_options(occurence_type, mag_value):
 	_, regions, _ = extract_places_regions(places)
 	regions.insert(0, 'World Wide')
 	return [{'label' : s, 'value' : s} for s in regions]
-##################################################
-
-########### set magnitude optiond ################
-# @app.callback(
-# 	Output('magnitude-drop', 'value'), 
-# 	[Input('occurence_type', 'options'), Input('magnitude-drop', 'options')],
-# 	events=[Event('live-update', 'interval')]
-# )
-# def set_magnitude_value(occurence_type, mag_value):
-# 	if occurence_type == 'all_hour':
-# 		return mag_value[0]['value']
-# 	if occurence_type == 'all_day':
-# 		return mag_value[2]['value']
-# 	elif occurence_type == 'all_week':
-# 		return mag_value[3]['value']
-# 	elif occurence_type == 'all_month':
-# 		return mag_value[4]['value']
-# 	else:
-# 		return mag_value
 ##################################################
 
 ############# plot earthquakes ###################
@@ -384,6 +366,34 @@ def mag_bar_diagram(occurence_type, mag_value, region_options):
 
 ##################################################
 
+########## mag depth relationship ################
+@app.callback(
+	Output('mag-depth-relation', 'children'),	[Input('occurence_type', 'value')]
+)
+def mag_depth_relation_line(occurence_type):
+	eq = pd.read_csv('https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/' + str(occurence_type) + '.csv')
+	mags = eq['mag'].tolist()
+	depths = eq['depth'].tolist()
+	# beta_, alpha_ = np.polyfit(mags, depths, 1)
+	# fit_line = [((beta_ * d) + alpha_) for d in depths]
+	traces = [
+		go.Scatter(
+			x=mags,
+			y=depths,
+			mode='markers'
+		),
+		# go.Scatter(x=mags, y=fit_line, mode='lines')
+	]
+	layout = go.Layout(
+		xaxis=dict(title='Magnitude'),
+		yaxis=dict(title='Depth')
+	)
+	relation = html.Div([
+		dcc.Graph(id='relation-graph', figure={'data' : traces, 'layout' : layout})
+	])
+	return relation
+##################################################
+
 ############# pie chart - update #################
 @app.callback(
 	Output('region-pie', 'children'),
@@ -413,6 +423,7 @@ def pie_region_diagram(occurence_type, mag_value):
 ################################# realtime tracking callbacks ############################
 
 ################################# earthquake history ############################
+############## country wise map plot #############
 @app.callback(
 	Output('history-map', 'children'), [Input('countries-dropdown', 'value')]
 )
@@ -461,6 +472,7 @@ def show_ancient_cw(country_name):
 		dcc.Graph(id='country-result', figure={'data' : quakes, 'layout' : layout})
 	])
 	return country_map
+##################################################
 ################################# earthquake history ############################
 
 @app.callback(Output('page-content', 'children'), [Input('url', 'pathname')])

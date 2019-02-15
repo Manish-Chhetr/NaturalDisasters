@@ -5,7 +5,7 @@ import dash_html_components as html
 import base64 as b64
 
 from realtime_details import measuring_mags
-from historical_overview import select_countries
+from historical_overview import (select_countries, show_histogram, show_boxplot, year_wise_frequency)
 
 colors_useful = {
 	'text_color' : '#154360',
@@ -128,7 +128,6 @@ realtime_tracking_layout = html.Div([
 			'backgroundColor' : colors_useful['symmetry'], 
 			'padding': '5px 5px', 'margin-left' : 30, 
 			'margin-right' : 30, 'margin-top' : 10,
-			'color' : colors_useful['text_color']
 	}),
 
 	html.Div(id='highest-mag', style={'margin-top' : 20}),
@@ -155,9 +154,7 @@ realtime_tracking_layout = html.Div([
 				], style={'overflowY' : 'scroll', 'height' : 130})
 			]),
 		], className='three columns', style={'margin-top' : 40, 'margin-left' : 20})
-	], className='row', style={'color' : colors_useful['text_color'], 'margin-top' : -20}),
-
-	# html.Hr(),
+	], className='row', style={'margin-top' : -20}),
 
 	html.Div([
 		html.Div([
@@ -173,8 +170,6 @@ realtime_tracking_layout = html.Div([
 					], style={'margin-right' : 25, 'margin-top' : 20})
 			], className='four columns'),
 		], className='row', style={'margin-top' : 20}),
-		
-		# html.Hr(),
 
 		html.Div([
 			html.Div([
@@ -185,14 +180,22 @@ realtime_tracking_layout = html.Div([
 				], style={'margin-left' : 30, 'textAlign' : 'left', 'margin-top' : 20})
 			], className='four columns', style={'margin-top' : 20}),
 			html.Div([
-				html.H6('Magnitudes of Earthquakes', style={'textAlign' : 'center'}),
-				html.Div(id='mag-bar')
+				html.Div([
+					dcc.Tabs(id='mag-depth-tab', children=[
+						dcc.Tab(label='Bar / Contour Plot', children=[
+							html.Div(id='mag-bar')
+						]),
+						dcc.Tab(label='Magnitude - Depth Relationship', children=[
+							html.Div(id='mag-depth-relation')
+						])
+					])
+				])
 			], className='eight columns', style={'margin-top' : 20})
 		], className='row', style={'margin-top' : 20}),
 	
-	], style={'color' : colors_useful['text_color']})
+	])
 
-], style={'fontFamily' : 'Dosis, sans-serif'})
+], style={'fontFamily' : 'Dosis, sans-serif', 'color' : colors_useful['text_color']})
 ##################################################################
 
 #################### earthquake history ##########################
@@ -219,15 +222,27 @@ earth_history_layout = html.Div([
 				value='JP',
 				placeholder='Select Country: ',
 			)
-		], className='six columns', style={'width' : 400, 'textAlign' : 'left', 'margin-top' : 15}),
+		], className='six columns', style={'width' : 400, 'textAlign' : 'left', 'margin-top' : 20}),
 	], className='row', style={'borderBottom' : 'thin lightgrey solid', 
 		'backgroundColor' : colors_useful['symmetry'], 
 		'padding': '10px 10px', 'margin-left' : 30, 
 		'margin-right' : 30, 'margin-top' : 10, 'textAlign' : 'center',
-		'color' : colors_useful['text_color']
 	}),
-	html.Div(id='history-map')
-], style={'fontFamily' : 'Dosis, sans-serif'})
+	html.Div(id='history-map'),
+	html.Div([
+		html.Div([
+			html.H6('Intensity and overview of the earthquake magnitudes',
+				style={'textAlign' : 'center', 'backgroundColor' : colors_useful['symmetry'], 'padding' : '10px 10px', 'margin-left' : 30, 'margin-right' : 30}),
+			html.Div([dcc.Graph(id='histo-mag', figure=show_histogram())], className='five columns'),
+			html.Div([dcc.Graph(id='box-mag', figure=show_boxplot())], className='five columns')
+		], className='row', style={'textAlign' : 'center'}),
+		html.Div([
+			html.H6('Frequency of the occurence yearly wise', 
+				style={'textAlign' : 'center', 'backgroundColor' : colors_useful['symmetry'], 'padding' : '10px 10px', 'margin-left' : 30, 'margin-right' : 30, 'position' : 'static'}),
+			dcc.Graph(id='year-frequency', figure=year_wise_frequency())
+		])
+	]),
+], style={'fontFamily' : 'Dosis, sans-serif', 'color' : colors_useful['text_color']})
 ##################################################################
 
 ################################ layout page #####################################
