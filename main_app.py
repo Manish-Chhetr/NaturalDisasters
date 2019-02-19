@@ -10,7 +10,7 @@ import plotly.graph_objs as go
 from dash.dependencies import (Input, Output, Event)
 
 from design_layout import (index_page, realtime_tracking_layout, earth_history_layout, colors_useful)
-from realtime_details import (grab_appropriate_data, extract_places_regions, radius_multiplier, center_location)
+from realtime_details import (occurence_based, grab_appropriate_data, extract_places_regions, radius_multiplier, center_location)
 from report_alerts import (seismic_reporting_data, get_all_felts, get_all_tsunamis, get_all_alerts, make_seismic_report, make_alert_report)
 
 app = dash.Dash(__name__)
@@ -29,9 +29,15 @@ app.layout = html.Div([
 	html.Div(id='page-content')
 ])
 
-earth_quake_df = pd.read_csv('eq_database_place.csv') # for earthquake_history
-
 ################################# realtime tracking callbacks ############################
+############# update magnitude options ###########
+@app.callback(Output('magnitude-drop', 'options'), [Input('occurence_type', 'value')],
+	events=[Event('live-update', 'interval')])
+def show_mag_options(occurence_type):
+	mag_list = occurence_based(occurence_type)
+	return [{'label' : m, 'value' : m} for m in mag_list]
+##################################################
+
 ######## update the state regions options ########
 @app.callback(
 	Output('region-options', 'options'),
@@ -423,6 +429,9 @@ def pie_region_diagram(occurence_type, mag_value):
 ################################# realtime tracking callbacks ############################
 
 ################################# earthquake history ############################
+
+earth_quake_df = pd.read_csv('eq_database_place.csv') # for earthquake_history
+
 ############## country wise map plot #############
 @app.callback(
 	Output('history-map', 'children'), [Input('countries-dropdown', 'value')]

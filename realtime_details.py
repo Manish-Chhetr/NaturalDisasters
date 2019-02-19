@@ -1,8 +1,21 @@
 import csv
 import pandas as pd
 
-measuring_mags = [1.0, 2.0, 3.0, 4.0, 4.5, 5.0, 5.5, 6.0, 6.5, 7.0, 8.0]
 radius_multiplier = {'inner' : 1.5, 'outer' : 3}
+
+def occurence_based(occurence):
+
+	'''
+	Parameters : `occurence`
+	Return : `list`
+	'''
+
+	eq_quake = pd.read_csv('https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/' + str(occurence) + '.csv')
+	only_mags = eq_quake['mag'].tolist()
+	# min_mag = min(only_mags)
+	max_mag = max(only_mags)
+	mag_list = list(range(1, (int(max_mag) + 1)))
+	return mag_list
 
 def grab_appropriate_data(occurence, mag_value):
 
