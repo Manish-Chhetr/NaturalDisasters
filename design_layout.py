@@ -4,7 +4,6 @@ import dash_core_components as dcc
 import dash_html_components as html
 import base64 as b64
 
-from realtime_details import measuring_mags
 from historical_overview import (select_countries, show_histogram, show_boxplot, year_wise_frequency)
 
 colors_useful = {
@@ -94,9 +93,9 @@ realtime_tracking_layout = html.Div([
 
 	dcc.Interval(id='live-update', interval='300000'), # update every 5 min
 
-	html.Div([html.H3('Earthquake Tracking System', style={'textAlign' : 'center', 'margin-top' : 20, 'margin-bottom' : 20}),
+	html.Div([
 		html.Div([
-			html.Div([html.H5('Occurence')], className='three columns', style={'textAlign' : 'right'}),
+			html.Div([html.H5('Occurence')], className='two columns', style={'textAlign' : 'center'}),
 			html.Div([
 				dcc.Dropdown(
 					id='occurence_type',
@@ -107,23 +106,14 @@ realtime_tracking_layout = html.Div([
 					],
 					value='all_day',
 				)
-			], className='three columns', style={'textAlign' : 'left'}),
-			html.Div([html.H5('Magnitude (+)')], className='two columns', style={'textAlign' : 'right'}),
-			html.Div([
-				dcc.Dropdown(
-					id='magnitude-drop',
-					options=[{'label' : s, 'value' : s} for s in measuring_mags],
-					value=4
-				)
-			], className='two columns', style={'textAlign' : 'center'})
-		], className='row', style={'textAlign' : 'center'}),
-		html.Div([
-			html.Div([html.H5('Select the State Region')], className='six columns',
-				style={'textAlign' : 'right'}),
-			html.Div([
-				dcc.Dropdown(id='region-options')
-			], className='three columns', style={'textAlign' : 'left'})
-		], className='row', style={'margin-top' : 20}),
+			], className='two columns'),
+			html.Div([html.H5('Magnitude (+)')], className='two columns'),
+			html.Div([dcc.Dropdown(id='magnitude-drop')], className='two columns', 
+				style={'textAlign' : 'center'}),
+			html.Div([html.H5('Region')], className='one columns'),
+			html.Div([dcc.Dropdown(id='region-options')], className='three columns')
+		], className='row', 
+		style={'margin-right' : 50, 'margin-left' : 30, 'margin-bottom' : 10, 'margin-top' : 20}),
 	], style={'borderBottom' : 'thin lightgrey solid', 
 			'backgroundColor' : colors_useful['symmetry'], 
 			'padding': '5px 5px', 'margin-left' : 30, 
