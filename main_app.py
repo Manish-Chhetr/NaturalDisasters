@@ -77,7 +77,7 @@ def plot_earthquakes(occurence_type, mag_value, region_options):
 		_, eplaces, _ = extract_places_regions(places)
 		seperate = []
 		for p in range(len(places)):
-			# split into, first name and last name example : "122km SSE Name, Iran" --> ["122km SSE Name", "Iran"]
+			# split into, first name and last name: "122km SSE Name, Iran" --> ["122km SSE Name", "Iran"]
 			seperate.append([places[p].split(', '), latitudes[p], longitudes[p], 
 				mag_info[p], mag_size[p], depth_info[p]])
 
@@ -88,7 +88,7 @@ def plot_earthquakes(occurence_type, mag_value, region_options):
 				locr = sep[0]
 				if len(locr) == 2:
 					if locr[1] == p:
-						regions.append([locr[0], sep[1], sep[2], 
+						regions.append([str(locr[0])+', '+str(p), sep[1], sep[2], 
 							sep[3], sep[4], sep[5]])
 				if len(locr) != 2:
 					if locr[0] == p:
@@ -96,7 +96,6 @@ def plot_earthquakes(occurence_type, mag_value, region_options):
 							sep[3], sep[4], sep[5]])
 			state_regions[p] = regions
 		state_regions['World Wide'] = []
-		# print(state_regions)
 
 		mi = []; ms = []; di = []; lats = []; lons = []
 		region_names = []
@@ -164,6 +163,22 @@ def plot_earthquakes(occurence_type, mag_value, region_options):
 			html.H3('Please select valid Magnitude / Region ...'),
 			# html.P(str(e))
 		], style={'margin-top' : 200, 'margin-bottom' : 200, 'textAlign' : 'center'})
+##################################################
+
+##### update region dropdown clicked on map ######
+@app.callback(
+	Output('region-options', 'value'), [Input('map-earthquake', 'clickData')]
+)
+def update_region_click(selection):
+	if selection is not None:
+		info_text = selection['points'][0]
+		place_name = info_text['text'].split('<br>')
+		split_place = place_name[0].split(', ')
+		if len(split_place) == 2:
+			region_n = split_place[1]
+		elif len(split_place) != 2:
+			region_n = split_place[0]
+		return str(region_n)
 ##################################################
 
 ############# display seismic report #############
@@ -309,7 +324,7 @@ def mag_bar_diagram(occurence_type, mag_value, region_options):
 				locr = sep[0]
 				if len(locr) == 2:
 					if locr[1] == p:
-						regions.append([locr[0], sep[1], sep[2]])
+						regions.append([str(locr[0])+', '+str(p), sep[1], sep[2]])
 				if len(locr) != 2:
 					if locr[0] == p:
 						regions.append([locr[0], sep[1], sep[2]])
