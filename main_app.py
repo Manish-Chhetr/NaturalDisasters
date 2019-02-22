@@ -35,6 +35,7 @@ app.layout = html.Div([
 	events=[Event('live-update', 'interval')])
 def show_mag_options(occurence_type):
 	mag_list = occurence_based(occurence_type)
+	mag_list.reverse()
 	return [{'label' : m, 'value' : m} for m in mag_list]
 ##################################################
 
