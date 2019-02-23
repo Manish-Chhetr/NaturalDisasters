@@ -201,10 +201,10 @@ earth_history_layout = html.Div([
 		html.Div([
 			html.Img(src='data:image/png;base64,{}'.format(en_globe.decode()),
 				style={'width' : 70, 'height' : 70})
-		], className='three columns', style={'textAlign' : 'right'}),
+		], className='one columns', style={'margin-top' : 10}),
 		html.Div([
 			html.H5('Country wise occurence')
-		], className='three columns', style={'textAlign' : 'right', 'margin-top' : 15}),
+		], className='three columns', style={'textAlign' : 'left', 'margin-top' : 20}),
 		html.Div([
 			dcc.Dropdown(
 				id='countries-dropdown',
@@ -212,7 +212,10 @@ earth_history_layout = html.Div([
 				value='JP',
 				placeholder='Select Country: ',
 			)
-		], className='six columns', style={'width' : 400, 'textAlign' : 'left', 'margin-top' : 20}),
+		], className='four columns', style={'width' : 400, 'textAlign' : 'left', 'margin-top' : 25}),
+		html.Div([html.H5('Year')], className='one columns', style={'margin-top' : 20}),
+		html.Div([dcc.Dropdown(id='history-year-dropdown')], 
+			className='two columns', style={'margin-top' : 25})
 	], className='row', style={'borderBottom' : 'thin lightgrey solid', 
 		'backgroundColor' : colors_useful['symmetry'], 
 		'padding': '10px 10px', 'margin-left' : 30, 

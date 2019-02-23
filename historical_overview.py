@@ -76,6 +76,42 @@ select_countries = get_country_name(eq_data_df)
 d_eq_df = eq_data_df.copy()
 d_eq_df['Date'] = pd.to_datetime(d_eq_df['Date'])
 
+def get_years_based_r(e_region):
+
+	'''
+	Parameter : `e_region` --> `str`
+	Return : `list`
+	'''
+
+	r_data = d_eq_df[d_eq_df['Place'].str.contains(str(e_region))]
+	u_r_years = list(set([date.year for date in r_data['Date']]))
+	u_r_years.reverse()
+	u_r_years.insert(0, 'All')
+	return u_r_years
+
+def data_y_r_based(e_region, e_year):
+
+	'''
+	Parameter : `e_region` --> `str`
+							`e_year` --> `int`
+	Return : `pandas DataFrame`
+	'''
+
+	r_data = d_eq_df[d_eq_df['Place'].str.contains(str(e_region))]
+	r_d_vals = r_data.values
+
+	y_r_data = [list(r_data.columns)]
+	for row in r_d_vals:
+		if row[0].year == e_year:
+			y_r_data.append(list(row))
+
+	with open('region_year_history.csv', 'w') as ryh:
+		writer = csv.writer(ryh)
+		writer.writerows(y_r_data)
+
+	yrdata = pd.read_csv('region_year_history.csv')
+	return yrdata
+
 def show_histogram():
 
 	'''

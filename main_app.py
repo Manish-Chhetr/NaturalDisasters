@@ -12,6 +12,7 @@ from dash.dependencies import (Input, Output, Event)
 from design_layout import (index_page, realtime_tracking_layout, earth_history_layout, colors_useful)
 from realtime_details import (occurence_based, grab_appropriate_data, extract_places_regions, radius_multiplier, center_location)
 from report_alerts import (seismic_reporting_data, get_all_felts, get_all_tsunamis, get_all_alerts, make_seismic_report, make_alert_report)
+from historical_overview import (get_years_based_r, data_y_r_based)
 
 app = dash.Dash(__name__)
 app.config['suppress_callback_exceptions'] = True
@@ -448,12 +449,31 @@ def pie_region_diagram(occurence_type, mag_value):
 
 earth_quake_df = pd.read_csv('eq_database_place.csv') # for earthquake_history
 
+############## place year options ################
+@app.callback(
+	Output('history-year-dropdown', 'options'), [Input('countries-dropdown', 'value')]
+)
+def show_year_options(country_name):
+	region_years = get_years_based_r(country_name)
+	return [{'label' : y, 'value' : y} for y in region_years]
+
+@app.callback(
+	Output('history-year-dropdown', 'value'), [Input('history-year-dropdown', 'options')]
+)
+def choose_all(year_options):
+	return year_options[0]['value']
+##################################################
+
 ############## country wise map plot #############
 @app.callback(
-	Output('history-map', 'children'), [Input('countries-dropdown', 'value')]
+	Output('history-map', 'children'), 
+	[Input('countries-dropdown', 'value'), Input('history-year-dropdown', 'value')]
 )
-def show_ancient_cw(country_name):
-	country_wise_df = earth_quake_df[earth_quake_df['Place'].str.contains(str(country_name))]
+def show_ancient_cw(country_name, occ_year):
+	if occ_year == 'All':
+		country_wise_df = earth_quake_df[earth_quake_df['Place'].str.contains(str(country_name))]
+	else:	
+		country_wise_df = data_y_r_based(country_name, occ_year)
 
 	lats = country_wise_df['Latitude'].tolist()
 	lons = country_wise_df['Longitude'].tolist()
@@ -461,12 +481,9 @@ def show_ancient_cw(country_name):
 	deps = country_wise_df['Depth'].tolist()
 	places = country_wise_df['Place'].tolist()
 	dates = country_wise_df['Date'].tolist()
-
-	occ_dates = ['Date: ' + str(i) for i in dates]
-	di = ['Depth: ' + str(i) for i in deps]
-	mi = ['Magnitude: ' + str(i) for i in mags]
 	ms = [float(i) * radius_multiplier['outer'] for i in mags]
-	info = [occ_dates[i] + '<br>' + places[i] + '<br>' + mi[i] + '<br>' + di[i] for i in range(len(places))]
+
+	info = ['Date: ' + str(dates[i]) + '<br>' + 'Place: ' + places[i] + '<br>' + 'Magnitude: ' + str(mags[i]) + '<br>' + 'Depth: ' + str(deps[i]) for i in range(len(places))]
 
 	quakes = [
 		go.Scattermapbox(
