@@ -511,7 +511,11 @@ def show_ancient_cw(country_name, occ_year):
 	)
 
 	country_map = html.Div([
-		dcc.Graph(id='country-result', figure={'data' : quakes, 'layout' : layout})
+		dcc.Graph(
+			id='country-result', 
+			figure={'data' : quakes, 'layout' : layout},
+			config={'displayModeBar' : False}
+		)
 	])
 	return country_map
 ##################################################
