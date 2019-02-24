@@ -89,7 +89,7 @@ realtime_tracking_layout = html.Div([
 		dcc.Link(html.Button('Back to Home', style={'backgroundColor' : colors_useful['rev_symmetry'], 'color' : colors_useful['text_color'], 'margin-top' : 25}), href='/', className='five columns', style={'textAlign' : 'center'}),
 		html.Img(src='data:image/png;base64,{}'.format(en_main_logo.decode(), id='main-logo'), className='two columns', style={'width' : 90, 'height' : 90, 'textAlign' : 'center'}),
 		dcc.Link(html.Button('Earthquake History', style={'backgroundColor' : colors_useful['rev_symmetry'], 'color' : colors_useful['text_color'], 'margin-top' : 25}), href='/earthquake_history-page', className='five columns', style={'textAlign' : 'center'})
-	], className='row', style={'backgroundColor' : colors_useful['symmetry'], 'padding' : '5px 5px', 'margin-right' : 30, 'margin-left' : 30, 'textAlign' : 'center'}),
+	], className='row', style={'backgroundColor' : colors_useful['symmetry'], 'padding' : '5px 5px', 'margin-right' : 15, 'margin-left' : 15, 'textAlign' : 'center'}),
 
 	dcc.Interval(id='live-update', interval='300000'), # update every 5 min
 
@@ -116,8 +116,8 @@ realtime_tracking_layout = html.Div([
 		style={'margin-right' : 50, 'margin-left' : 30, 'margin-bottom' : 10, 'margin-top' : 20}),
 	], style={'borderBottom' : 'thin lightgrey solid', 
 			'backgroundColor' : colors_useful['symmetry'], 
-			'padding': '5px 5px', 'margin-left' : 30, 
-			'margin-right' : 30, 'margin-top' : 10,
+			'padding': '5px 5px', 'margin-left' : 20, 
+			'margin-right' : 20, 'margin-top' : 10,
 	}),
 
 	html.Div(id='highest-mag', style={'margin-top' : 20}),
@@ -143,7 +143,7 @@ realtime_tracking_layout = html.Div([
 					html.Div(id='tsunami-reports')
 				], style={'overflowY' : 'scroll', 'height' : 130})
 			]),
-		], className='three columns', style={'margin-top' : 40, 'margin-left' : 20})
+		], className='three columns', style={'margin-top' : 30, 'margin-left' : 20})
 	], className='row', style={'margin-top' : -20}),
 
 	html.Div([
@@ -195,46 +195,75 @@ earth_history_layout = html.Div([
 		dcc.Link(html.Button('Back to Home', style={'backgroundColor' : colors_useful['rev_symmetry'], 'color' : colors_useful['text_color'], 'margin-top' : 25}), href='/', className='five columns', style={'textAlign' : 'center'}),
 		html.Img(src='data:image/png;base64,{}'.format(en_main_logo.decode(), id='main-logo'), className='two columns', style={'width' : 90, 'height' : 90, 'textAlign' : 'center'}),
 		dcc.Link(html.Button('Real Time Tracking', style={'backgroundColor' : colors_useful['rev_symmetry'], 'color' : colors_useful['text_color'], 'margin-top' : 25}), href='/realtime_tracking-page', className='five columns', style={'textAlign' : 'center'})
-	], className='row', style={'backgroundColor' : colors_useful['symmetry'], 'padding' : '5px 5px', 'margin-right' : 30, 'margin-left' : 30, 'textAlign' : 'center'}),
+	], className='row', style={'backgroundColor' : colors_useful['symmetry'], 'padding' : '5px 5px', 'margin-right' : 15, 'margin-left' : 15, 'textAlign' : 'center'}),
 
 	html.Div([
-		html.Div([
-			html.Img(src='data:image/png;base64,{}'.format(en_globe.decode()),
-				style={'width' : 70, 'height' : 70})
-		], className='one columns', style={'margin-top' : 10}),
-		html.Div([
-			html.H5('Country wise occurence')
-		], className='three columns', style={'textAlign' : 'left', 'margin-top' : 20}),
-		html.Div([
-			dcc.Dropdown(
-				id='countries-dropdown',
-				options=[{'label' : k, 'value' : v} for k, v in select_countries.items()],
-				value='JP',
-				placeholder='Select Country: ',
-			)
-		], className='four columns', style={'width' : 400, 'textAlign' : 'left', 'margin-top' : 25}),
-		html.Div([html.H5('Year')], className='one columns', style={'margin-top' : 20}),
-		html.Div([dcc.Dropdown(id='history-year-dropdown')], 
-			className='two columns', style={'margin-top' : 25})
-	], className='row', style={'borderBottom' : 'thin lightgrey solid', 
-		'backgroundColor' : colors_useful['symmetry'], 
-		'padding': '10px 10px', 'margin-left' : 30, 
-		'margin-right' : 30, 'margin-top' : 10, 'textAlign' : 'center',
-	}),
-	html.Div(id='history-map'),
-	html.Div([
-		html.Div([
-			html.H6('Intensity and overview of the earthquake magnitudes',
-				style={'textAlign' : 'center', 'backgroundColor' : colors_useful['symmetry'], 'padding' : '10px 10px', 'margin-left' : 30, 'margin-right' : 30}),
-			html.Div([dcc.Graph(id='histo-mag', figure=show_histogram())], className='five columns'),
-			html.Div([dcc.Graph(id='box-mag', figure=show_boxplot())], className='five columns')
-		], className='row', style={'textAlign' : 'center'}),
-		html.Div([
-			html.H6('Frequency of the occurence yearly wise', 
-				style={'textAlign' : 'center', 'backgroundColor' : colors_useful['symmetry'], 'padding' : '10px 10px', 'margin-left' : 30, 'margin-right' : 30, 'position' : 'static'}),
-			dcc.Graph(id='year-frequency', figure=year_wise_frequency())
+		dcc.Tabs(id='hml-quake-tab', children=[
+			dcc.Tab(label='History (1965-2016)', children=[
+				html.Div([
+					html.Div([
+						html.Img(src='data:image/png;base64,{}'.format(en_globe.decode()),
+							style={'width' : 70, 'height' : 70})
+					], className='one columns', style={'margin-top' : 10}),
+					html.Div([
+						html.H5('Country wise occurence')
+					], className='three columns', style={'textAlign' : 'left', 'margin-top' : 20}),
+					html.Div([
+						dcc.Dropdown(
+							id='countries-dropdown',
+							options=[{'label' : k, 'value' : v} for k, v in select_countries.items()],
+							value='JP',
+							placeholder='Select Country: ',
+						)
+					], className='four columns', style={'width' : 400, 'textAlign' : 'left', 'margin-top' : 25}),
+					html.Div([html.H5('Year')], className='one columns', style={'margin-top' : 20}),
+					html.Div([dcc.Dropdown(id='history-year-dropdown')], 
+						className='two columns', style={'margin-top' : 25})
+				], className='row', style={'borderBottom' : 'thin lightgrey solid', 
+					'backgroundColor' : colors_useful['symmetry'], 
+					'padding': '5px 5px', 'margin-top' : 20, 'textAlign' : 'center',
+				}),
+				html.Div(id='history-map'),
+				html.Div([
+					html.Div([
+						html.H6('Intensity and overview of the earthquake magnitudes',
+							style={'textAlign' : 'center', 'backgroundColor' : colors_useful['symmetry'], 'padding' : '10px 10px'}),
+						html.Div([dcc.Graph(id='histo-mag', figure=show_histogram())], className='five columns'),
+						html.Div([dcc.Graph(id='box-mag', figure=show_boxplot())], className='five columns')
+					], className='row', style={'textAlign' : 'center'}),
+					html.Div([
+						html.H6('Frequency of the occurence yearly wise', 
+							style={'textAlign' : 'center', 'backgroundColor' : colors_useful['symmetry'], 'padding' : '10px 10px', 'position' : 'static'}),
+						dcc.Graph(id='year-frequency', figure=year_wise_frequency())
+					])
+				]),
+			]),
+			dcc.Tab(label='Predictive Model', children=[
+				html.Div([
+					html.H5('Prone Countries', className='three columns', style={'textAlign' : 'right'}),
+					html.Div([
+						dcc.Dropdown(
+							id='country-means',
+							options=[
+								{'label' : 'Japan', 'value' : 'JP'},
+								{'label' : 'Indonesia', 'value' : 'ID'},
+								{'label' : 'United States', 'value' : 'US'},
+								{'label' : 'India', 'value' : 'IN'}
+							],
+							value='JP'
+						)
+					], className='three columns', style={'margin-top' : 5, 'textAlign' : 'left'}),
+					html.H5('Specific Place', className='three columns', style={'textAlign' : 'right'}),
+					html.Div([dcc.Dropdown(id='place-inside')
+					], className='three columns', style={'margin-top' : 5, 'textAlign' : 'left'})
+				], className='row', style={'borderBottom' : 'thin lightgrey solid', 
+					'backgroundColor' : colors_useful['symmetry'], 
+					'padding': '5px 5px', 'margin-top' : 20}
+				),
+				html.Div(id='quake-means-map')
+			])
 		])
-	]),
+	], style={'margin-right' : 15, 'margin-left' : 15, 'margin-top' : 20})
 ], style={'fontFamily' : 'Dosis, sans-serif', 'color' : colors_useful['text_color']})
 ##################################################################
 

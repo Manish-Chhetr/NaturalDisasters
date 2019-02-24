@@ -13,6 +13,7 @@ from design_layout import (index_page, realtime_tracking_layout, earth_history_l
 from realtime_details import (occurence_based, grab_appropriate_data, extract_places_regions, radius_multiplier, center_location)
 from report_alerts import (seismic_reporting_data, get_all_felts, get_all_tsunamis, get_all_alerts, make_seismic_report, make_alert_report)
 from historical_overview import (get_years_based_r, data_y_r_based)
+from quake_means import (get_info_index, segregation_llmd, inside_place_wise)
 
 app = dash.Dash(__name__)
 app.config['suppress_callback_exceptions'] = True
@@ -139,7 +140,7 @@ def plot_earthquakes(occurence_type, mag_value, region_options):
 		layout = go.Layout(
 			height=700, autosize=True, showlegend=False,
 		  hovermode='closest',
-		  margin=dict(l=30, r=10, t=40, b=40),
+		  margin=dict(l=30, r=10, t=30, b=40),
 		  geo=dict(
 		  	projection=dict(type="equirectangular"),
 		  ),
@@ -498,7 +499,7 @@ def show_ancient_cw(country_name, occ_year):
 	layout = go.Layout(
 		height=700, autosize=True, showlegend=False,
 	  hovermode='closest',
-	  margin=dict(l=30, r=30, t=40, b=40),
+	  margin=dict(l=10, r=10, t=20, b=20),
 	  geo=dict(
 	  	projection=dict(type="equirectangular"),
 	  ),
@@ -520,6 +521,104 @@ def show_ancient_cw(country_name, occ_year):
 	return country_map
 ##################################################
 ################################# earthquake history ############################
+
+################################# predictive model ##############################
+############### update place inside ##############
+@app.callback(
+	Output('place-inside', 'options'), [Input('country-means', 'value')]
+)
+def update_inside_places(country_name):
+	country_wise_df = earth_quake_df[earth_quake_df['Place'].str.contains(str(country_name))]
+	cplaces = country_wise_df['Place'].tolist()
+	place_inoptions = inside_place_wise(cplaces)
+	return [{'label' : pi, 'value' : pi.split(' -- ')[0]} for pi in place_inoptions]
+
+@app.callback(
+	Output('place-inside', 'value'), [Input('place-inside', 'options')]
+)
+def choose_all_placein(placein_options):
+	return placein_options[0]['value']
+##################################################
+
+############### k means clustering ###############
+@app.callback(
+	Output('quake-means-map', 'children'),
+	[Input('country-means', 'value'), Input('place-inside', 'value')]
+)
+def cluster_qmeans_placein(country_name, placein_name):
+	dummy_eq = earth_quake_df.copy()
+	dummy_pl = dummy_eq[dummy_eq['Place'].str.contains(str(country_name))]
+	dummy_df = dummy_pl.copy()
+	dummy_df = dummy_df.drop(['ID', 'Source', 'Location Source', 'Magnitude Source'], axis=1)
+	qmeans_pin = []; clat = 0; clon = 0
+
+	try:
+		if placein_name == 'All':
+			clat = dummy_df['Latitude'].tolist()[0]
+			clon = dummy_df['Longitude'].tolist()[0]
+			
+			location_df = dummy_df[['Latitude', 'Longitude']]
+			q_zones = get_info_index(location_df, dummy_pl, 4)
+
+			for i, j in q_zones.items():
+				daty, laty, lony, placy, magy, depthy = segregation_llmd(j)
+				cluster_info = ['Date: ' + str(daty[k]) + '<br>' + 'Place: ' + placy[k] + '<br>' + 'Magnitude: ' + str(magy[k]) + '<br>' + 'Depth: ' + str(depthy[k]) for k in range(len(placy))]
+				qmeans_pin.append(
+					go.Scattermapbox(
+						lat=laty, lon=lony, mode='markers',
+						marker=dict(size=10, opacity=1),
+						text=cluster_info, hoverinfo='text', showlegend=False
+					)
+				)
+		else:
+			placein_df = dummy_df[dummy_df['Place'].str.contains(str(placein_name))]
+			daty = placein_df['Date'].tolist()
+			laty = placein_df['Latitude'].tolist()
+			lony = placein_df['Longitude'].tolist()
+			placy = placein_df['Place'].tolist()
+			magy = placein_df['Magnitude'].tolist()
+			depthy = placein_df['Depth'].tolist()
+			clat = laty[0]; clon = lony[0]
+
+			cluster_info = ['Date: ' + str(daty[k]) + '<br>' + 'Place: ' + placy[k] + '<br>' + 'Magnitude: ' + str(magy[k]) + '<br>' + 'Depth: ' + str(depthy[k]) for k in range(len(placy))]
+
+			qmeans_pin.append(
+				go.Scattermapbox(
+					lat=laty, lon=lony, mode='markers',
+					marker=dict(size=10, opacity=1, color=magy, colorscale=cs_mag),
+					text=cluster_info, hoverinfo='text', showlegend=False
+				)
+			)
+
+		layout = go.Layout(
+			height=700, autosize=True, showlegend=False,
+		  hovermode='closest',
+		  margin=dict(l=10, r=10, t=20, b=20),
+		  geo=dict(
+		  	projection=dict(type="equirectangular"),
+		  ),
+		  mapbox=dict(
+		    accesstoken=map_token, bearing=1,
+				center=dict(lat=clat, lon=clon),
+				pitch=0, zoom=3, 
+				style='mapbox://styles/chaotic-enigma/cjpbbmuzmadb12spjq5n07nd1'
+			)
+		)
+		
+		cluster_qmap = html.Div([
+			dcc.Graph(
+				id='cluster-result',
+				figure={'data' : qmeans_pin, 'layout' : layout},
+				config={'displayModeBar' : False}
+			)
+		])
+		return cluster_qmap
+	except Exception as e:
+		return html.Div([
+			html.H4('Location Unavailable for this input -- Deprecated')
+		], style={'textAlign' : 'center', 'margin-top' : 150, 'margin-bottom' : 150})
+##################################################
+################################# predictive model ##############################
 
 @app.callback(Output('page-content', 'children'), [Input('url', 'pathname')])
 def display_page(pathname):
