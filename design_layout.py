@@ -40,6 +40,11 @@ index_page = html.Div([
 			], style={'textAlign' : 'left', 'margin-top' : 50}, className='four columns')
 		], className='row', style={'margin-top' : -30}),
 		html.Div([
+			html.H2('To explore the Real time tracking', className='eight columns', 
+				style={'textAlign' : 'right'}),
+			dcc.Link(html.Button('Explore here', style={'backgroundColor' : colors_useful['symmetry'], 'color' : colors_useful['text_color']}), href='/realtime_tracking-page', className='four columns', style={'margin-top' : 22, 'textAlign' : 'left'})
+		], className='row', style={'margin-top' : 40}),
+		html.Div([
 			html.Div([
 				html.Div([html.H2('National Earthquake Information Center', style={'textDecoration' : 'underline'})]),
 				html.Div([
@@ -70,12 +75,6 @@ index_page = html.Div([
 				])
 			], style={'margin-top' : 40})
 		]),
-
-		html.Div([
-			html.H2('To explore the Real time tracking', className='eight columns', 
-				style={'textAlign' : 'right'}),
-			dcc.Link(html.Button('Explore here', style={'backgroundColor' : colors_useful['symmetry'], 'color' : colors_useful['text_color']}), href='/realtime_tracking-page', className='four columns', style={'margin-top' : 22, 'textAlign' : 'left'})
-		], className='row', style={'margin-top' : 40}),
 	], className='container', style={'backgroundColor' : colors_useful['rev_symmetry'], 'padding' : '30px 30px', 'boxShadow' : '8px 8px #aed6f1', 'border' : 'thin #e5e8e8 solid', 'fontFamily' : 'Dosis, sans-serif'})
 
 ], style={'backgroundColor' : colors_useful['symmetry'], 'padding' : '40px 40px', 'color' : colors_useful['text_color']}
