@@ -9,6 +9,8 @@ import dash_html_components as  html
 import plotly.graph_objs as go
 from dash.dependencies import (Input, Output, Event)
 
+from earthquakes_mapping import (MapScatter, MapLayout)
+
 from design_layout import (index_page, realtime_tracking_layout, earth_history_layout, colors_useful)
 from realtime_details import (occurence_based, grab_appropriate_data, extract_places_regions, radius_multiplier, center_location)
 from report_alerts import (seismic_reporting_data, get_all_felts, get_all_tsunamis, get_all_alerts, make_seismic_report, make_alert_report)
@@ -22,9 +24,6 @@ cs_mag = [
 	[0, '#a303b9'],	[0.25, '#ea6402'],[0.5, '#fa73a0'],	
 	[0.75, '#f03b20'], [1, '#bd0026'],
 ]
-
-with open('map_token.txt', 'r') as mk:
-	map_token = mk.read()
 
 app.layout = html.Div([
 	dcc.Location(id='url', refresh=False),
@@ -127,30 +126,9 @@ def plot_earthquakes(occurence_type, mag_value, region_options):
 
 		info = [region_names[i] + '<br>' + mi[i] + '<br>' + di[i] for i in range(len(region_names))]
 
-		quakes = [
-			go.Scattermapbox(
-				lat=lats, lon=lons,	mode='markers',
-				marker=dict(
-					size=ms, color=ms, opacity=1,
-					colorscale=cs_mag,
-				),
-				text=info, hoverinfo='text', showlegend=False
-			)
-		]
-		layout = go.Layout(
-			height=700, autosize=True, showlegend=False,
-		  hovermode='closest',
-		  margin=dict(l=30, r=10, t=30, b=40),
-		  geo=dict(
-		  	projection=dict(type="equirectangular"),
-		  ),
-		  mapbox=dict(
-		    accesstoken=map_token, bearing=1,
-				center=dict(lat=c_lat, lon=c_lon),
-				pitch=0, zoom=zoom_value, 
-				style='mapbox://styles/chaotic-enigma/cjpbbmuzmadb12spjq5n07nd1'
-			)
-		)
+		quakes = [MapScatter(lats, lons, ms, ms, cs_mag, info)]
+		layout = MapLayout(700, 30, 10, 30, 40, c_lat, c_lon, zoom_value)
+
 		map_deisgn = html.Div([
 			dcc.Graph(
 				id='map-earthquake',
@@ -354,10 +332,7 @@ def mag_bar_diagram(occurence_type, mag_value, region_options):
 					colorscale='Viridis'
 				)
 			)
-			layout = go.Layout(
-				height=600,
-				title=str(region_options)
-			)
+			layout = go.Layout(height=600, title=str(region_options))
 			bar_state_region = html.Div([
 				dcc.Graph(id='state-region-bar', figure={'data' : traces, 'layout' : layout})
 			])
@@ -473,8 +448,10 @@ def choose_all(year_options):
 def show_ancient_cw(country_name, occ_year):
 	if occ_year == 'All':
 		country_wise_df = earth_quake_df[earth_quake_df['Place'].str.contains(str(country_name))]
+		zoom_value = 3
 	else:	
 		country_wise_df = data_y_r_based(country_name, occ_year)
+		zoom_value = 3.5
 
 	lats = country_wise_df['Latitude'].tolist()
 	lons = country_wise_df['Longitude'].tolist()
@@ -486,30 +463,8 @@ def show_ancient_cw(country_name, occ_year):
 
 	info = ['Date: ' + str(dates[i]) + '<br>' + 'Place: ' + places[i] + '<br>' + 'Magnitude: ' + str(mags[i]) + '<br>' + 'Depth: ' + str(deps[i]) for i in range(len(places))]
 
-	quakes = [
-		go.Scattermapbox(
-			lat=lats, lon=lons,	mode='markers',
-			marker=dict(
-				size=10, color=ms, opacity=1,
-				colorscale=cs_mag,
-			),
-			text=info, hoverinfo='text', showlegend=False
-		)
-	]
-	layout = go.Layout(
-		height=700, autosize=True, showlegend=False,
-	  hovermode='closest',
-	  margin=dict(l=10, r=10, t=20, b=20),
-	  geo=dict(
-	  	projection=dict(type="equirectangular"),
-	  ),
-	  mapbox=dict(
-	    accesstoken=map_token, bearing=1,
-			center=dict(lat=lats[0], lon=lons[0]),
-			pitch=0, zoom=3, 
-			style='mapbox://styles/chaotic-enigma/cjpbbmuzmadb12spjq5n07nd1'
-		)
-	)
+	quakes = [MapScatter(lats, lons, 10, ms, cs_mag, info)]
+	layout = MapLayout(700, 10, 10, 20, 20, lats[0], lons[0], zoom_value)
 
 	country_map = html.Div([
 		dcc.Graph(
@@ -556,20 +511,14 @@ def cluster_qmeans_placein(country_name, placein_name):
 		if placein_name == 'All':
 			clat = dummy_df['Latitude'].tolist()[0]
 			clon = dummy_df['Longitude'].tolist()[0]
-			
+			zoom_value = 3
 			location_df = dummy_df[['Latitude', 'Longitude']]
 			q_zones = get_info_index(location_df, dummy_pl, 4)
 
 			for i, j in q_zones.items():
 				daty, laty, lony, placy, magy, depthy = segregation_llmd(j)
 				cluster_info = ['Date: ' + str(daty[k]) + '<br>' + 'Place: ' + placy[k] + '<br>' + 'Magnitude: ' + str(magy[k]) + '<br>' + 'Depth: ' + str(depthy[k]) for k in range(len(placy))]
-				qmeans_pin.append(
-					go.Scattermapbox(
-						lat=laty, lon=lony, mode='markers',
-						marker=dict(size=10, opacity=1),
-						text=cluster_info, hoverinfo='text', showlegend=False
-					)
-				)
+				qmeans_pin.append(MapScatter(laty, lony, 10, None, None, cluster_info))
 		else:
 			placein_df = dummy_df[dummy_df['Place'].str.contains(str(placein_name))]
 			daty = placein_df['Date'].tolist()
@@ -579,31 +528,12 @@ def cluster_qmeans_placein(country_name, placein_name):
 			magy = placein_df['Magnitude'].tolist()
 			depthy = placein_df['Depth'].tolist()
 			clat = laty[0]; clon = lony[0]
+			zoom_value = 5
 
 			cluster_info = ['Date: ' + str(daty[k]) + '<br>' + 'Place: ' + placy[k] + '<br>' + 'Magnitude: ' + str(magy[k]) + '<br>' + 'Depth: ' + str(depthy[k]) for k in range(len(placy))]
+			qmeans_pin.append(MapScatter(laty, lony, 10, magy, cs_mag, cluster_info))
 
-			qmeans_pin.append(
-				go.Scattermapbox(
-					lat=laty, lon=lony, mode='markers',
-					marker=dict(size=10, opacity=1, color=magy, colorscale=cs_mag),
-					text=cluster_info, hoverinfo='text', showlegend=False
-				)
-			)
-
-		layout = go.Layout(
-			height=700, autosize=True, showlegend=False,
-		  hovermode='closest',
-		  margin=dict(l=10, r=10, t=20, b=20),
-		  geo=dict(
-		  	projection=dict(type="equirectangular"),
-		  ),
-		  mapbox=dict(
-		    accesstoken=map_token, bearing=1,
-				center=dict(lat=clat, lon=clon),
-				pitch=0, zoom=3, 
-				style='mapbox://styles/chaotic-enigma/cjpbbmuzmadb12spjq5n07nd1'
-			)
-		)
+		layout = MapLayout(700, 10, 10, 20, 20, clat, clon, zoom_value)
 		
 		cluster_qmap = html.Div([
 			dcc.Graph(
@@ -629,13 +559,11 @@ def display_page(pathname):
 	else:
 		return index_page
 
-external_css = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
-for css in external_css:
-	app.css.append_css({'external_url' : css})
+external_css = 'https://codepen.io/chriddyp/pen/bWLwgP.css'
+app.css.append_css({'external_url' : external_css})
 
-external_js = ['https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/js/materialize.min.js']
-for js in external_js:
-	app.scripts.append_script({'external_url' : js})
+external_js = 'https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/js/materialize.min.js'
+app.scripts.append_script({'external_url' : external_js})
 
 if __name__ == '__main__':
 	app.run_server(debug=True)
