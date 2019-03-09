@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/home"
+        android:title="Home"
+        android:icon="@drawable/ic_home_black"/>
+    <item
+        android:id="@+id/p_hour"
+        android:title="Past Hour"
+        android:icon="@drawable/ic_hourglass_empty"/>
+    <item
+        android:id="@+id/p_day"
+        android:title="Past Day"
+        android:icon="@drawable/ic_view_day_black"/>
+    <item
+        android:id="@+id/p_week"
+        android:title="Past Week"
+        android:icon="@drawable/ic_view_week_black"/>
+    <item
+        android:id="@+id/p_month"
+        android:title="Past Month"
+        android:icon="@drawable/ic_history_black"/>
+    <item
+        android:id="@+id/logout"
+        android:title="Exit"
+        android:icon="@drawable/ic_exit_to_app_black"/>
+</menu>
