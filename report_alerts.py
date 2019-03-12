@@ -43,7 +43,7 @@ def get_all_felts(occurence, mag_value, region_name):
 	felt_specific = felt_specific.sort_values(by='felt', ascending=False)
 	title_felt = list(zip(felt_specific['title'], felt_specific['felt']))
 	region_felt = [regionf for regionf in title_felt if region_name in regionf[0]]
-	if region_name == 'World Wide': return title_felt
+	if region_name == 'Worldwide': return title_felt
 	else: return region_felt
 
 def get_all_alerts(occurence, mag_value, region_name):
@@ -59,7 +59,7 @@ def get_all_alerts(occurence, mag_value, region_name):
 	alert_specific = alert_specific.sort_values(by='alert', ascending=False)
 	title_alert = list(zip(alert_specific['title'], alert_specific['alert']))
 	region_alert = [regiona for regiona in title_alert if region_name in regiona[0]]
-	if region_name == 'World Wide': return title_alert
+	if region_name == 'Worldwide': return title_alert
 	else: return region_alert
 
 def get_all_tsunamis(occurence, mag_value, region_name):
@@ -75,7 +75,7 @@ def get_all_tsunamis(occurence, mag_value, region_name):
 	tsunami_event = tsunami_event.sort_values(by='mag', ascending=False)
 	title_tsunami = list(zip(tsunami_event['title'], tsunami_event['tsunami']))
 	region_tsunami = [regiont for regiont in title_tsunami if region_name in regiont[0]]
-	if region_name == 'World Wide': return title_tsunami
+	if region_name == 'Worldwide': return title_tsunami
 	else: return region_tsunami
 
 def make_seismic_report(report_list, loc_color, report_color):

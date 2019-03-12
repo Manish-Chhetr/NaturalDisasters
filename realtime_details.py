@@ -64,7 +64,7 @@ def center_location(some_df, r_name):
 	Return : `c_lat` & `c_lon` -> `tuple`
 	'''
 
-	if r_name == 'World Wide':
+	if r_name == 'Worldwide':
 		max_mag = max(some_df['mag'])
 		center_details = some_df[some_df['mag'] == max_mag]
 		c_lat = center_details['latitude'].tolist()

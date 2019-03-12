@@ -50,7 +50,7 @@ def grab_region_options(occurence_type, mag_value):
 	eq = grab_appropriate_data(occurence_type, mag_value)
 	places = eq['place'].tolist()
 	_, regions, _ = extract_places_regions(places)
-	regions.insert(0, 'World Wide')
+	regions.insert(0, 'Worldwide')
 	return [{'label' : s, 'value' : s} for s in regions]
 ##################################################
 
@@ -97,7 +97,7 @@ def plot_earthquakes(occurence_type, mag_value, region_options):
 						regions.append([locr[0], sep[1], sep[2], 
 							sep[3], sep[4], sep[5]])
 			state_regions[p] = regions
-		state_regions['World Wide'] = []
+		state_regions['Worldwide'] = []
 
 		mi = []; ms = []; di = []; lats = []; lons = []
 		region_names = []
@@ -112,7 +112,7 @@ def plot_earthquakes(occurence_type, mag_value, region_options):
 					mi.append(about[3])
 					ms.append(about[4])
 					di.append(about[5])
-		if region_options == 'World Wide':
+		if region_options == 'Worldwide':
 			zoom_value = 1
 			for k, v in state_regions.items():
 				details = v
@@ -226,7 +226,7 @@ def display_highest_mag(occurence_type, mag_value, region_options):
 	eq = grab_appropriate_data(occurence_type, mag_value)
 	threshold_mag = 5.0
 	try:
-		if region_options == 'World Wide':
+		if region_options == 'Worldwide':
 			world_df = eq
 			world_hm_mags = world_df['mag'].tolist()
 			world_max_mag = max(world_hm_mags)
@@ -310,10 +310,10 @@ def mag_bar_diagram(occurence_type, mag_value, region_options):
 					if locr[0] == p:
 						regions.append([locr[0], sep[1], sep[2]])
 			state_regions[p] = regions
-		state_regions['World Wide'] = []
+		state_regions['Worldwide'] = []
 
 		region_places = list(state_regions.keys())
-		region_places.remove('World Wide')
+		region_places.remove('Worldwide')
 
 		traces = []; bar_region = []
 		bar_mag = []; bar_depth = []
@@ -338,7 +338,7 @@ def mag_bar_diagram(occurence_type, mag_value, region_options):
 			])
 			return bar_state_region
 
-		elif region_options == 'World Wide':
+		elif region_options == 'Worldwide':
 			for k, v in state_regions.items():
 				details = v
 				for about in details:
@@ -408,7 +408,7 @@ def pie_region_diagram(occurence_type, mag_value):
 		traces.append(
 			go.Pie(labels=regions, values=region_counts, pull=.05)
 		)
-		layout = go.Layout(title='World Wide')
+		layout = go.Layout(title='Worldwide')
 		pie_chart = html.Div([
 			dcc.Graph(id='pie-graph',	figure={'data' : traces, 'layout' : layout})
 		])
