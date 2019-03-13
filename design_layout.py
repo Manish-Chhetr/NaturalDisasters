@@ -237,7 +237,7 @@ earth_history_layout = html.Div([
 					])
 				]),
 			]),
-			dcc.Tab(label='Predictive Model', children=[
+			dcc.Tab(label='Clustering Model', children=[
 				html.Div([
 					html.H5('Prone Countries', className='three columns', style={'textAlign' : 'right'}),
 					html.Div([
@@ -259,7 +259,18 @@ earth_history_layout = html.Div([
 					'backgroundColor' : colors_useful['symmetry'], 
 					'padding': '5px 5px', 'margin-top' : 20}
 				),
-				html.Div(id='quake-means-map')
+				html.Div([
+					html.Div(id='quake-means-map', className='ten columns'),
+					html.Div([
+						html.Div([
+							dcc.RadioItems(
+								id='country-predictions',
+								options=[{'label' : s, 'value' : s} for s in ['None', 'Prediction']],
+								value='None'
+							)
+						], style={'margin-top' : 150}),
+					], className='two columns')
+				], className='row')
 			])
 		])
 	], style={'margin-right' : 15, 'margin-left' : 15, 'margin-top' : 20})

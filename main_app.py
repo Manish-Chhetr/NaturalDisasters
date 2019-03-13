@@ -9,12 +9,15 @@ import dash_html_components as  html
 import plotly.graph_objs as go
 from dash.dependencies import (Input, Output, Event)
 
+from sklearn.model_selection import train_test_split
+
 from earthquakes_mapping import (MapScatter, MapLayout)
 
 from design_layout import (index_page, realtime_tracking_layout, earth_history_layout, colors_useful)
 from realtime_details import (occurence_based, grab_appropriate_data, extract_places_regions, radius_multiplier, center_location)
 from report_alerts import (seismic_reporting_data, get_all_felts, get_all_tsunamis, get_all_alerts, make_seismic_report, make_alert_report)
 from historical_overview import (get_years_based_r, data_y_r_based)
+from predictive_model import (label_integer_encoder, get_interpolation, random_forest_regressor, grid_search_cv)
 from quake_means import (get_info_index, segregation_llmd, inside_place_wise)
 
 app = dash.Dash(__name__)
@@ -495,23 +498,32 @@ def choose_all_placein(placein_options):
 	return placein_options[0]['value']
 ##################################################
 
+############# update radio options ###############
+# @app.callback(
+# 	Output('country-predictions', 'value'), [Input('place-inside', 'value')]
+# )
+# def default_none(cpred_value):
+# 	return cpred_value[0]['value']
+##################################################
+
 ############### k means clustering ###############
 @app.callback(
 	Output('quake-means-map', 'children'),
-	[Input('country-means', 'value'), Input('place-inside', 'value')]
+	[Input('country-means', 'value'), Input('place-inside', 'value'), 
+		Input('country-predictions', 'value')]
 )
-def cluster_qmeans_placein(country_name, placein_name):
+def cluster_qmeans_placein(country_name, placein_name, some_pred):
 	dummy_eq = earth_quake_df.copy()
 	dummy_pl = dummy_eq[dummy_eq['Place'].str.contains(str(country_name))]
 	dummy_df = dummy_pl.copy()
 	dummy_df = dummy_df.drop(['ID', 'Source', 'Location Source', 'Magnitude Source'], axis=1)
 	qmeans_pin = []; clat = 0; clon = 0
+	zoom_value = 3; accuracy = 0
 
 	try:
-		if placein_name == 'All':
+		if placein_name == 'All' and some_pred == 'None':
 			clat = dummy_df['Latitude'].tolist()[0]
 			clon = dummy_df['Longitude'].tolist()[0]
-			zoom_value = 3
 			location_df = dummy_df[['Latitude', 'Longitude']]
 			q_zones = get_info_index(location_df, dummy_pl, 4)
 
@@ -519,7 +531,31 @@ def cluster_qmeans_placein(country_name, placein_name):
 				daty, laty, lony, placy, magy, depthy = segregation_llmd(j)
 				cluster_info = ['Date: ' + str(daty[k]) + '<br>' + 'Place: ' + placy[k] + '<br>' + 'Magnitude: ' + str(magy[k]) + '<br>' + 'Depth: ' + str(depthy[k]) for k in range(len(placy))]
 				qmeans_pin.append(MapScatter(laty, lony, 10, None, None, cluster_info))
-		else:
+		elif some_pred == 'Prediction':
+			dummy_df['Depth Error'] = get_interpolation(dummy_df, 'Depth Error')
+			dummy_df['Depth Seismic Stations'] = get_interpolation(dummy_df, 'Depth Seismic Stations')
+			dummy_df['Magnitude Error'] = get_interpolation(dummy_df, 'Magnitude Error')
+			dummy_df['Magnitude Seismic Stations'] = get_interpolation(dummy_df, 'Magnitude Seismic Stations')
+			dummy_df['Azimuthal Gap'] = get_interpolation(dummy_df, 'Azimuthal Gap')
+			dummy_df['Horizontal Distance'] = get_interpolation(dummy_df, 'Horizontal Distance')
+			dummy_df['Horizontal Error'] = get_interpolation(dummy_df, 'Horizontal Error')
+			dummy_df['Root Mean Square'] = get_interpolation(dummy_df, 'Root Mean Square')
+			dummy_df['Type'] = label_integer_encoder(dummy_df, 'Type')
+			dummy_df['Magnitude Type'] = label_integer_encoder(dummy_df, 'Magnitude Type')
+			dummy_df['Place'] = label_integer_encoder(dummy_df, 'Place')
+			dummy_df['Status'] = label_integer_encoder(dummy_df, 'Status')
+			X = dummy_df[['Depth', 'Magnitude Error', 'Magnitude Type', 'Place', 'Depth Error', 
+              'Azimuthal Gap', 'Horizontal Distance', 'Horizontal Error', 'Root Mean Square']]
+			y = dummy_df[['Latitude', 'Longitude', 'Magnitude']]
+			X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=5)
+			preds, accuracy = grid_search_cv(X_train, y_train, X_test, y_test)
+			pred_lats = [res[0] for res in preds]
+			pred_lons = [res[1] for res in preds]
+			clat = pred_lats[0]; clon = pred_lons[0]
+			pred_mags = [res[2] for res in preds]
+			pred_info = ['Magnitude: ' + str(i) for i in pred_mags]
+			qmeans_pin.append(MapScatter(pred_lats, pred_lons, 10, '#4ef6f1', None, pred_info))
+		elif placein_name != 'All':
 			placein_df = dummy_df[dummy_df['Place'].str.contains(str(placein_name))]
 			daty = placein_df['Date'].tolist()
 			laty = placein_df['Latitude'].tolist()
@@ -536,6 +572,7 @@ def cluster_qmeans_placein(country_name, placein_name):
 		layout = MapLayout(700, 10, 10, 20, 20, clat, clon, zoom_value)
 		
 		cluster_qmap = html.Div([
+			html.H4('Model accuracy: ' + str(round(accuracy*100, 2)) + '%'),
 			dcc.Graph(
 				id='cluster-result',
 				figure={'data' : qmeans_pin, 'layout' : layout},
@@ -545,9 +582,11 @@ def cluster_qmeans_placein(country_name, placein_name):
 		return cluster_qmap
 	except Exception as e:
 		return html.Div([
-			html.H4('Location Unavailable for this input -- Deprecated')
+			html.H4('Location Unavailable for this input -- Deprecated'),
+			# html.P(str(e))
 		], style={'textAlign' : 'center', 'margin-top' : 150, 'margin-bottom' : 150})
 ##################################################
+
 ################################# predictive model ##############################
 
 @app.callback(Output('page-content', 'children'), [Input('url', 'pathname')])
