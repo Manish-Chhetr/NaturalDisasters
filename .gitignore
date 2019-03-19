@@ -1,5 +1,5 @@
 *.pyc
 *.class
-# map_token.txt
-# *.csv
+map_token.txt
+*.csv
 .ipynb_checkpoints/
