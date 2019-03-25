@@ -552,7 +552,7 @@ def cluster_qmeans_placein(country_name, placein_name, some_pred):
 			pred_lats = [res[0] for res in preds]
 			pred_lons = [res[1] for res in preds]
 			clat = pred_lats[0]; clon = pred_lons[0]
-			pred_mags = [res[2] for res in preds]
+			pred_mags = [round(res[2], 2) for res in preds]
 			pred_info = ['Magnitude: ' + str(i) for i in pred_mags]
 			qmeans_pin.append(MapScatter(pred_lats, pred_lons, 10, '#4ef6f1', None, pred_info))
 		elif placein_name != 'All':
