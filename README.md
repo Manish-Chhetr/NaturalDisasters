@@ -28,3 +28,14 @@ The working can be seen below.
 # Milestone:
 The aim for our project is to predict future earthquakes and alert people about the occurence and prevent any kind off damage.
     
+In this, we mainly considered the highly prone regions like **Japan**, **Indonesia**, **India** etc to predict magnitude of the future calamities. The algorithm that we have used to predict is **GridSearchCV** algorithm that uses the **RandomForestRegressor** as an argument and fits the best estimator. The same is used to predict the **Accuracy**. We mainly have to tune the parameters in order to get the maximum accuracy.
+
+## Contributors to the Project
+
+[Manish Chhetri](https://github.com/In-finite)
+
+[Shashank Sekhar](https://github.com/Shashank-Sekhar)
+
+[Mohammed Sameeruddin](https://github.com/chaotic-enigma)
+
+We are also looking forward to include the future enhancements like intimating the officials on different social media platforms or social network groups and take necessary precautions.
