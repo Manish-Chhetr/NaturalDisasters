@@ -593,10 +593,9 @@ def cluster_qmeans_placein(country_name, placein_name, some_pred):
 def display_page(pathname):
 	if pathname == '/realtime_tracking-page':
 		return realtime_tracking_layout
-	if pathname == '/earthquake_history-page':
+	elif pathname == '/earthquake_history-page':
 		return earth_history_layout
-	else:
-		return index_page
+	return index_page
 
 external_css = 'https://codepen.io/chriddyp/pen/bWLwgP.css'
 app.css.append_css({'external_url' : external_css})
