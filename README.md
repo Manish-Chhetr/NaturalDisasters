@@ -1,6 +1,7 @@
 # Earthquake Tracking System:
 
 Our project mainly shows the real time plots and past occurrences of earthquakes based on user input. The database which we are using is from the official USGS website.
+[Earthquake Tracking Website](https://earthquake-tracking.herokuapp.com/) 
 
 # Requirements:
 ```
@@ -34,8 +35,5 @@ In this, we mainly considered the highly earthquake prone areas like **Japan**, 
 
 [Manish Chhetri](https://github.com/In-finite)
 
-[Shashank Sekhar](https://github.com/Shashank-Sekhar)
-
-[Mohammed Sameeruddin](https://github.com/chaotic-enigma)
 
 We are also looking forward to include the future enhancements like intimating the officials on different social media platforms or social network groups and take necessary precautions.
